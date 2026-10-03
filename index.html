@@ -216,7 +216,7 @@
       .carousel-heading { display: flex; width: min(100% - 40px, 1290px); margin: 0 auto 28px; align-items: end; justify-content: space-between; }
       .carousel-heading h2 { margin: 0; font-family: Inter, sans-serif; font-size: clamp(42px, 6vw, 82px); font-weight: 400; letter-spacing: -.1em; line-height: .85; }
       .carousel-heading p { max-width: 210px; margin: 0 0 2px; font-family: Inter, sans-serif; font-size: 16px; letter-spacing: -.04em; line-height: 1.1; }
-      .carousel-viewport { width: 100%; overflow: hidden; }
+      .carousel-viewport { width: 100%; overflow: hidden; touch-action: pan-y; }
       .carousel-track { display: flex; gap: 20px; width: max-content; padding: 0 max(20px, calc((100vw - 1290px) / 2)); transition: transform .55s cubic-bezier(.22, .61, .36, 1); }
       .carousel-card { position: relative; display: flex; width: min(400px, 31vw); min-width: 310px; height: 498px; overflow: hidden; flex-direction: column; justify-content: flex-end; padding: 28px 20px 21px; border-radius: 20px; background: #145f71; }
       .carousel-card.orange-card { background: #ff9b20; }
@@ -266,7 +266,7 @@
       .testimonial-arrow { display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: #242422; color: #fff; cursor: pointer; }
       .testimonial-arrow:hover { background: var(--orange); }
       .testimonial-arrow svg { width: 20px; height: 20px; }
-      .testimonials-stage { position: relative; height: 430px; margin-top: 38px; }
+      .testimonials-stage { position: relative; height: 430px; margin-top: 38px; touch-action: pan-y; }
       .testimonial-card { position: absolute; top: 24px; left: 50%; display: flex; width: min(460px, 78vw); height: 365px; padding: 30px; flex-direction: column; gap: 22px; border-radius: 22px; color: #33321f; box-shadow: 0 16px 30px -20px rgba(30, 30, 20, .3); transition: transform .6s cubic-bezier(.22, 1, .36, 1), opacity .6s ease, filter .6s ease; transform: translateX(-50%); }
       .testimonial-card[data-color="yellow"] { background: #f2e890; }
       .testimonial-card[data-color="blue"] { background: #d5e4ef; }
@@ -735,6 +735,7 @@
       const carouselTrack = document.querySelector('#carousel-track');
       const carouselCards = [...document.querySelectorAll('.carousel-card')];
       let carouselIndex = 0;
+      let carouselPointerStart = null;
       function moveCarousel(direction) {
         carouselIndex = Math.min(Math.max(carouselIndex + direction, 0), carouselCards.length - 1);
         const gap = parseFloat(getComputedStyle(carouselTrack).gap) || 20;
@@ -743,6 +744,10 @@
       }
       document.querySelector('#carousel-prev').addEventListener('click', () => moveCarousel(-1));
       document.querySelector('#carousel-next').addEventListener('click', () => moveCarousel(1));
+      const carouselViewport = document.querySelector('.carousel-viewport');
+      carouselViewport.addEventListener('pointerdown', (event) => { carouselPointerStart = event.clientX; carouselViewport.setPointerCapture?.(event.pointerId); });
+      carouselViewport.addEventListener('pointerup', (event) => { if (carouselPointerStart !== null && Math.abs(event.clientX - carouselPointerStart) > 35) moveCarousel(event.clientX < carouselPointerStart ? 1 : -1); carouselPointerStart = null; });
+      carouselViewport.addEventListener('pointercancel', () => { carouselPointerStart = null; });
 
       const testimonialCards = [...document.querySelectorAll('.testimonial-card.is-real-review')];
       const testimonialStage = document.querySelector('#testimonials-stage');
@@ -799,6 +804,7 @@
       }, { passive: false });
       testimonialStage.addEventListener('pointerdown', (event) => { testimonialPointerStart = event.clientX; testimonialStage.setPointerCapture?.(event.pointerId); });
       testimonialStage.addEventListener('pointerup', (event) => { if (testimonialPointerStart !== null && Math.abs(event.clientX - testimonialPointerStart) > 35) moveTestimonials(event.clientX < testimonialPointerStart ? 1 : -1); testimonialPointerStart = null; });
+      testimonialStage.addEventListener('pointercancel', () => { testimonialPointerStart = null; });
       window.addEventListener('resize', renderTestimonials);
       renderTestimonials();
 
