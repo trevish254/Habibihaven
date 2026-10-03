@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Habibi Haven — Checkout</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+      :root { --orange: #145f71; --accent: #ff9b20; --paper: #f7f6f4; --ink: #171717; --muted: #718084; --blue: #dff1f5; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--paper); color: var(--ink); font-family: "DM Mono", monospace; }
+      a { color: inherit; }
+      .promo-bar { display: grid; min-height: 40px; place-items: center; padding: 8px 20px; background: var(--accent); color: #fff; font-size: 12px; text-transform: uppercase; }
+      .site-nav { position: sticky; top: 0; z-index: 10; display: flex; justify-content: center; width: 100%; padding: 20px; background: rgba(247, 246, 244, .92); backdrop-filter: blur(14px); }
+      .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: min(100%, 1280px); min-height: 40px; margin: 0 auto; }
+      .menu-link, .brand, .social-link, .edit-link { color: var(--orange); text-decoration: none; }
+      .menu-link { justify-self: start; font-size: 16px; }
+      .menu-count { font-size: 12px; }
+      .brand { justify-self: center; }
+      .brand-logo { display: block; width: 56px; height: 56px; object-fit: contain; background: url("Habibi%20logo.png") center / contain no-repeat; filter: brightness(0) saturate(100%) invert(81%) sepia(21%) saturate(1147%) hue-rotate(154deg) brightness(101%) contrast(91%); }
+      .nav-actions { display: flex; align-items: center; justify-self: end; gap: 20px; }
+      .socials { display: flex; align-items: center; gap: 17px; }
+      .social-link { display: grid; width: 18px; height: 18px; place-items: center; }
+      .social-link svg { width: 100%; height: 100%; }
+      .edit-link { display: inline-flex; align-items: center; gap: 10px; min-height: 30px; padding: 7px 10px; border-radius: 5px; background: var(--accent); color: #fff; font-size: 13px; text-transform: uppercase; }
+      .checkout { width: min(100% - 40px, 1180px); margin: 0 auto; padding: 75px 0 110px; }
+      .checkout-heading { margin-bottom: 48px; }
+      .eyebrow { margin: 0 0 14px; color: var(--orange); font-size: 13px; text-transform: uppercase; }
+      h1 { margin: 0; color: var(--orange); font-family: Inter, sans-serif; font-size: clamp(58px, 9vw, 120px); font-weight: 400; letter-spacing: -.09em; line-height: .85; }
+      .checkout-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: 56px; align-items: start; }
+      .panel { padding: 28px; background: #fff; }
+      .panel h2 { margin: 0 0 24px; color: var(--orange); font-family: Inter, sans-serif; font-size: 28px; font-weight: 400; letter-spacing: -.06em; }
+      .cart-item { display: grid; grid-template-columns: 84px 1fr auto; gap: 16px; align-items: center; padding: 16px 0; border-top: 1px solid #dfe3e2; }
+      .cart-item:first-child { border-top: 0; padding-top: 0; }
+      .cart-item img { width: 84px; height: 84px; object-fit: cover; background: #ede9e3; }
+      .cart-item h3 { margin: 0 0 7px; font-size: 16px; font-weight: 400; text-transform: uppercase; }
+      .cart-item p { margin: 0; color: var(--muted); font-size: 12px; }
+      .cart-item-price { color: var(--orange); font-size: 14px; white-space: nowrap; }
+      .quantity { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+      .quantity button { width: 24px; height: 24px; border: 1px solid var(--orange); border-radius: 50%; background: transparent; color: var(--orange); cursor: pointer; font: inherit; line-height: 1; }
+      .empty-cart { color: var(--muted); line-height: 1.5; }
+      .empty-cart a { color: var(--orange); }
+      .delivery-panel { margin-top: 24px; background: var(--blue); }
+      label { display: block; margin: 0 0 8px; font-size: 12px; text-transform: uppercase; }
+      input { width: 100%; padding: 13px 14px; border: 1px solid #b4c3c5; border-radius: 4px; background: rgba(255,255,255,.7); color: var(--ink); font: inherit; }
+      .field + .field { margin-top: 18px; }
+      .address-search { margin-top: 24px; padding: 18px; border: 1px solid #cbd7d8; border-radius: 14px; background: rgba(255,255,255,.28); }
+      .address-search h3 { margin: 0 0 10px; color: var(--ink); font-size: 13px; font-weight: 500; text-transform: uppercase; }
+      .address-help { margin: 0 0 13px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+      .address-input-wrap { position: relative; }
+      .address-input-wrap::before { position: absolute; top: 50%; left: 14px; color: var(--orange); content: "⌕"; font-size: 23px; transform: translateY(-53%); }
+      .address-input-wrap input { padding-left: 40px; }
+      .map-section { margin-top: 16px; padding: 18px; border: 1px solid #cbd7d8; border-radius: 14px; background: rgba(255,255,255,.28); }
+      .map-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+      .map-heading h3 { margin: 0; font-size: 13px; font-weight: 500; text-transform: uppercase; }
+      .optional { color: var(--muted); font-size: 11px; text-transform: lowercase; }
+      .map-preview { position: relative; min-height: 260px; overflow: hidden; border: 1px solid #c7ccca; border-radius: 12px; background-color: #d8d6ca; background-image: linear-gradient(28deg, transparent 46%, rgba(255,255,255,.65) 47% 50%, transparent 51%), linear-gradient(116deg, transparent 47%, rgba(255,255,255,.6) 48% 51%, transparent 52%), linear-gradient(8deg, transparent 62%, rgba(189,190,181,.72) 63% 65%, transparent 66%); background-size: 170px 140px, 210px 180px, 270px 170px; }
+      .map-preview::before { position: absolute; inset: 0; background: radial-gradient(circle at 55% 56%, rgba(116,146,148,.48) 0 3px, transparent 4px), linear-gradient(90deg, transparent 49%, rgba(139,151,145,.35) 50% 51%, transparent 52%); content: ""; }
+      .map-label { position: absolute; color: rgba(55,70,68,.42); font-family: Inter, sans-serif; font-size: 11px; }
+      .map-label.nairobi { top: 54%; left: 47%; font-size: 20px; }
+      .map-label.westlands { top: 25%; left: 8%; }
+      .map-label.kilimani { bottom: 20%; left: 28%; }
+      .map-label.mathy { top: 30%; right: 9%; }
+      .map-pin { position: absolute; top: 53%; left: 52%; display: grid; width: 28px; height: 28px; place-items: center; border: 3px solid #fff; border-radius: 50% 50% 50% 0; background: var(--orange); box-shadow: 0 4px 12px rgba(0,0,0,.2); color: #fff; font-size: 12px; transform: translate(-50%, -100%) rotate(-45deg); }
+      .map-pin span { transform: rotate(45deg); }
+      .map-location-button { position: absolute; top: 14px; right: 14px; padding: 11px 14px; border: 0; border-radius: 22px; background: var(--accent); color: #fff; cursor: pointer; font: inherit; font-size: 12px; text-transform: uppercase; }
+      .map-controls { position: absolute; right: 12px; bottom: 12px; display: grid; width: 42px; overflow: hidden; border-radius: 4px; background: rgba(255,255,255,.8); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+      .map-controls button { height: 32px; border: 0; background: transparent; color: #737b78; cursor: pointer; font-size: 23px; }
+      .map-caption { margin: 13px 0 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+      .location-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+      .location-row input:last-child { grid-column: 1 / -1; }
+      .secondary-button, .primary-button { border: 0; border-radius: 4px; cursor: pointer; font: inherit; text-transform: uppercase; }
+      .secondary-button { padding: 11px 13px; background: #fff; color: var(--orange); white-space: nowrap; }
+      .estimate-button { width: 100%; margin-top: 18px; padding: 13px; background: var(--ink); color: #fff; }
+      .location-status { min-height: 18px; margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
+      .summary-row { display: flex; justify-content: space-between; gap: 20px; padding: 13px 0; border-bottom: 1px solid #dfe3e2; font-size: 14px; }
+      .summary-row.total { padding-top: 22px; border-bottom: 0; color: var(--orange); font-size: 20px; }
+      .payment-panel { margin-top: 24px; }
+      .mpesa-mark { display: inline-flex; margin-bottom: 18px; padding: 7px 10px; border-radius: 4px; background: #45a447; color: #fff; font-size: 13px; text-transform: uppercase; }
+      .pay-button { width: 100%; margin-top: 22px; padding: 15px; background: var(--accent); color: #fff; }
+      .payment-note { margin: 14px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+      .form-message { min-height: 20px; margin-top: 14px; color: var(--orange); font-size: 12px; line-height: 1.4; }
+      @media (max-width: 760px) {
+        .site-nav { padding: 8px 14px; }
+        .nav-inner { grid-template-columns: 1fr auto 1fr; row-gap: 0; min-height: 0; }
+        .brand { grid-column: 2; grid-row: 1; justify-self: center; }
+        .brand-logo { width: 42px; height: 42px; }
+        .menu-link { grid-column: 1; grid-row: 1; }
+        .nav-actions { grid-column: 3; grid-row: 1; justify-self: end; justify-content: flex-end; gap: 12px; }
+        .socials { gap: 13px; }
+        .edit-link { display: none; }
+        .checkout { width: min(100% - 28px, 520px); padding-top: 52px; }
+        .checkout-grid { grid-template-columns: 1fr; gap: 24px; }
+        .panel { padding: 22px 18px; }
+        .location-row { grid-template-columns: 1fr; }
+        .location-row input:last-child { grid-column: auto; }
+        .secondary-button { width: 100%; margin-top: 10px; }
+      }
+    </style>
+    <link rel="stylesheet" href="search.css" />
+    <script src="search.js" defer></script>
+  </head>
+  <body>
+    <div class="promo-bar">20% on meals this week — recharge daily</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a class="menu-link" href="menu.html#menu">Menu <span class="menu-count">6</span></a>
+        <a class="brand" href="index.html" aria-label="Habibi Haven home"><img class="brand-logo" src="Habibi%20logo.svg" alt="Habibi Haven" /></a>
+        <div class="nav-actions">
+          <div class="socials" aria-label="Utility links">
+            <a class="social-link" href="#search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"/><path d="m15.5 15.5 4.5 4.5"/></svg></a>
+            <a class="social-link" href="#account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.8-3.5 3-5.2 6.5-5.2s5.7 1.7 6.5 5.2"/></svg></a>
+            <a class="social-link" href="checkout.html" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h2l1.7 9.2a2 2 0 0 0 2 1.6h6.8a2 2 0 0 0 1.9-1.4L20 8H7"/><circle cx="10" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg></a>
+          </div>
+          <a class="edit-link" href="index.html#contact">Contact us <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </nav>
+    <main class="checkout">
+      <header class="checkout-heading"><p class="eyebrow">Habibi Haven / Checkout</p><h1>your order,<br />your way.</h1></header>
+      <div class="checkout-grid">
+        <section>
+          <div class="panel"><h2>Your order</h2><div id="cart-items"></div><p class="empty-cart" id="empty-cart" hidden>Your order is empty. <a href="menu.html#menu">Browse the menu</a> to add something delicious.</p></div>
+          <div class="panel delivery-panel">
+            <h2>Delivery details</h2>
+            <div class="field"><label for="customer-name">Name</label><input id="customer-name" autocomplete="name" placeholder="Your name" /></div>
+            <div class="field"><label for="customer-phone">Phone</label><input id="customer-phone" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX" /></div>
+            <div class="address-search"><h3>Search your address</h3><p class="address-help">Start typing your estate, building, or road. Pick a suggestion to autofill.</p><div class="address-input-wrap"><input id="delivery-address" autocomplete="street-address" placeholder="e.g. Kilimani, Yaya Centre, Baobab Street" /></div></div>
+            <div class="map-section"><div class="map-heading"><h3>Pin location on map <span class="optional">(optional)</span></h3><span aria-hidden="true">⌃</span></div><div class="map-preview" id="map-preview" role="button" tabindex="0" aria-label="Pin your delivery location"><span class="map-label westlands">Westlands</span><span class="map-label kilimani">Kilimani</span><span class="map-label mathy">Mathare</span><span class="map-label nairobi">Nairobi</span><span class="map-pin" aria-hidden="true"><span>•</span></span><button class="map-location-button" id="use-location" type="button">⌖ Use my location</button><div class="map-controls"><button id="map-zoom-in" type="button" aria-label="Zoom in">+</button><button id="map-zoom-out" type="button" aria-label="Zoom out">−</button></div></div><p class="map-caption">Tap the map, drag the pin, or press Use my location to fine-tune your gate.</p></div>
+            <div class="location-row"><input id="delivery-notes" placeholder="Apt / House #" /><input id="building-name" placeholder="Building / Estate name" /><input id="landmark" placeholder="Landmark or gate note (e.g. green gate opposite Total)" /></div>
+            <p class="location-status" id="location-status">Add your address or use your location for a delivery estimate.</p>
+            <button class="secondary-button estimate-button" id="estimate-delivery" type="button">Estimate delivery</button>
+          </div>
+        </section>
+        <aside>
+          <div class="panel"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="items-total">KES 0</strong></div><div class="summary-row"><span>Delivery</span><strong id="delivery-total">Not estimated</strong></div><div class="summary-row total"><span>Total</span><strong id="grand-total">KES 0</strong></div></div>
+          <div class="panel payment-panel"><span class="mpesa-mark">M-Pesa only</span><h2>Pay securely</h2><div class="field"><label for="mpesa-phone">M-Pesa number</label><input id="mpesa-phone" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX" /></div><button class="primary-button pay-button" id="pay-button" type="button">Pay with M-Pesa</button><p class="payment-note">Your M-Pesa payment request will be sent to this number. The live STK Push and delivery-provider connection will be added through the payment and delivery APIs.</p><p class="form-message" id="form-message" role="status"></p></div>
+        </aside>
+      </div>
+    </main>
+    <script>
+      const cartKey = 'habibiCart';
+      let cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
+      let deliveryFee = 0;
+      let deliveryCoordinates = null;
+      const currency = (amount) => `KES ${Math.round(amount).toLocaleString()}`;
+      const cartItems = document.querySelector('#cart-items');
+      const emptyCart = document.querySelector('#empty-cart');
+      const itemsTotal = document.querySelector('#items-total');
+      const deliveryTotal = document.querySelector('#delivery-total');
+      const grandTotal = document.querySelector('#grand-total');
+      const status = document.querySelector('#location-status');
+      function renderCart() {
+        cartItems.innerHTML = '';
+        emptyCart.hidden = cart.length > 0;
+        cart.forEach((item, index) => {
+          const row = document.createElement('div'); row.className = 'cart-item';
+          row.innerHTML = `<img src="${item.image}" alt="${item.name}"><div><h3>${item.name}</h3><p>${currency(item.price)} each</p><div class="quantity"><button type="button" data-action="decrease" data-index="${index}" aria-label="Decrease ${item.name}">−</button><span>${item.quantity}</span><button type="button" data-action="increase" data-index="${index}" aria-label="Increase ${item.name}">+</button></div></div><strong class="cart-item-price">${currency(item.price * item.quantity)}</strong>`;
+          cartItems.appendChild(row);
+        });
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        itemsTotal.textContent = currency(subtotal); deliveryTotal.textContent = deliveryFee ? currency(deliveryFee) : 'Not estimated'; grandTotal.textContent = currency(subtotal + deliveryFee);
+      }
+      cartItems.addEventListener('click', (event) => { const button = event.target.closest('button[data-index]'); if (!button) return; const index = Number(button.dataset.index); if (button.dataset.action === 'increase') cart[index].quantity += 1; else cart[index].quantity -= 1; if (cart[index].quantity < 1) cart.splice(index, 1); localStorage.setItem(cartKey, JSON.stringify(cart)); renderCart(); });
+      function setDeliveryFee(distanceKm, source) { deliveryFee = 250 + Math.max(0, Math.ceil(distanceKm - 2)) * 100; status.textContent = `Estimated at ${currency(deliveryFee)} for approximately ${distanceKm.toFixed(1)} km (${source}). Final cost may change after provider confirmation.`; renderCart(); }
+      document.querySelector('#use-location').addEventListener('click', () => { if (!navigator.geolocation) { status.textContent = 'Location is not available in this browser. Enter your address instead.'; return; } status.textContent = 'Finding your location…'; navigator.geolocation.getCurrentPosition((position) => { deliveryCoordinates = position.coords; status.textContent = 'Location found. Click “Estimate delivery” for a quote.'; }, () => { status.textContent = 'We could not access your location. Enter your address instead.'; }); });
+      document.querySelector('#map-preview').addEventListener('click', (event) => { if (event.target.closest('button')) return; const map = event.currentTarget; const pin = map.querySelector('.map-pin'); const bounds = map.getBoundingClientRect(); const x = Math.max(12, Math.min(88, ((event.clientX - bounds.left) / bounds.width) * 100)); const y = Math.max(16, Math.min(84, ((event.clientY - bounds.top) / bounds.height) * 100)); pin.style.left = `${x}%`; pin.style.top = `${y}%`; deliveryCoordinates = { latitude: -1.2833 + (50 - y) * 0.002, longitude: 36.8219 + (x - 50) * 0.002 }; status.textContent = 'Pin placed. Add your gate details, then estimate delivery.'; });
+      document.querySelector('#map-preview').addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click(); } });
+      document.querySelector('#map-zoom-in').addEventListener('click', () => { status.textContent = 'Map zoomed in. Tap the map to fine-tune your pin.'; });
+      document.querySelector('#map-zoom-out').addEventListener('click', () => { status.textContent = 'Map zoomed out. Tap the map to fine-tune your pin.'; });
+      document.querySelector('#estimate-delivery').addEventListener('click', () => { const address = document.querySelector('#delivery-address').value.trim(); if (!address && !deliveryCoordinates) { status.textContent = 'Enter a delivery address or use your location first.'; return; } if (deliveryCoordinates) { const lat = deliveryCoordinates.latitude * Math.PI / 180; const dLat = (-1.2833 - deliveryCoordinates.latitude) * Math.PI / 180; const dLon = (36.8219 - deliveryCoordinates.longitude) * Math.PI / 180; const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat) * Math.cos(-1.2833 * Math.PI / 180) * Math.sin(dLon / 2) ** 2; setDeliveryFee(6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)), 'location'); } else setDeliveryFee(4, 'address estimate'); });
+      document.querySelector('#pay-button').addEventListener('click', () => { const message = document.querySelector('#form-message'); const phone = document.querySelector('#mpesa-phone').value.trim(); const address = document.querySelector('#delivery-address').value.trim(); if (!cart.length) { message.textContent = 'Add an item before checking out.'; return; } if (!phone || !address) { message.textContent = 'Add your M-Pesa number and delivery address first.'; return; } if (!deliveryFee) { message.textContent = 'Estimate delivery before requesting payment.'; return; } message.textContent = 'Ready for M-Pesa STK Push integration. Connect the payment endpoint to send the request.'; });
+      renderCart();
+    </script>
+  </body>
+</html>

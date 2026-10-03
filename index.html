@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habibi Haven — Good food, good company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --orange: #145f71;
+        --accent: #ff9b20;
+        --paper: #f7f6f4;
+        --ink: #171717;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; background: var(--paper); color: var(--ink); font-family: "DM Mono", monospace; }
+      a { color: inherit; text-decoration: none; }
+
+      .promo-bar {
+        display: grid;
+        min-height: 40px;
+        place-items: center;
+        padding: 0 20px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 13px;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .site-nav {
+        position: fixed;
+        top: 40px;
+        left: 0;
+        z-index: 10;
+        width: 100%;
+        padding: 20px;
+        color: #fff;
+        transition: top .25s ease, background .25s ease, color .25s ease, backdrop-filter .25s ease;
+      }
+
+      .site-nav.is-scrolled { top: 0; background: rgba(247, 246, 244, .88); color: var(--ink); backdrop-filter: blur(14px); }
+      .site-nav.is-scrolled .brand-logo { filter: brightness(0) saturate(100%) invert(81%) sepia(21%) saturate(1147%) hue-rotate(154deg) brightness(101%) contrast(91%); }
+
+      .nav-inner {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        width: min(100%, 1280px);
+        min-height: 40px;
+        margin: 0 auto;
+      }
+
+      .menu-link, .brand, .social-link, .edit-link { color: inherit; }
+      .menu-link { justify-self: start; font-size: 16px; line-height: 1; }
+      .menu-count { font-size: 12px; }
+      .brand { justify-self: center; font-family: Inter, sans-serif; font-size: 30px; letter-spacing: -0.08em; line-height: 1; }
+      .brand-logo { display: block; width: 56px; height: 56px; object-fit: contain; background: url("Habibi%20logo.png") center / contain no-repeat; }
+      #open-cart { position: relative; }
+      .cart-count { position: absolute; top: -9px; right: -10px; display: grid; min-width: 17px; height: 17px; padding: 0 4px; place-items: center; border-radius: 10px; background: var(--accent); color: #fff; font-size: 10px; line-height: 1; }
+      .nav-actions { display: flex; align-items: center; justify-self: end; gap: 20px; }
+      .socials { display: flex; align-items: center; gap: 17px; }
+      .social-link { display: grid; width: 18px; height: 18px; place-items: center; }
+      .social-link svg { width: 100%; height: 100%; }
+      .edit-link { display: inline-flex; align-items: center; gap: 10px; min-height: 30px; padding: 7px 10px; border-radius: 5px; background: var(--accent); color: #fff; font-size: 16px; line-height: 1; text-transform: uppercase; }
+
+      .video-hero {
+        position: relative;
+        height: 220vh;
+        min-height: 1200px;
+        background: #171717;
+        color: #fff;
+      }
+
+      .hero-sticky {
+        position: sticky;
+        top: 0;
+        display: grid;
+        height: 100vh;
+        min-height: 680px;
+        overflow: hidden;
+        place-items: center;
+      }
+
+      .hero-sticky::after {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(180deg, rgba(0, 0, 0, .35), transparent 30%, rgba(0, 0, 0, .3));
+        content: "";
+        pointer-events: none;
+      }
+
+      .frame-stage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .hero-frame { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+      .hero-content {
+        position: relative;
+        z-index: 4;
+        display: flex;
+        width: min(100% - 40px, 1280px);
+        height: 100%;
+        margin: 0 auto;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 0 0 9vh;
+        pointer-events: none;
+      }
+
+      .hero-content h1 { max-width: 760px; margin: 0; font-family: Inter, sans-serif; font-size: clamp(60px, 11vw, 170px); font-weight: 400; letter-spacing: -.105em; line-height: .82; }
+      .hero-content p { max-width: 300px; margin: 25px 0 0 auto; font-family: Inter, sans-serif; font-size: 18px; letter-spacing: -.05em; line-height: 1.15; }
+
+      .hero-controls {
+        position: absolute;
+        right: 20px;
+        bottom: 25px;
+        z-index: 6;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        pointer-events: auto;
+      }
+
+      .mode-label { font-size: 12px; text-transform: uppercase; }
+      .mode-toggle { display: flex; padding: 3px; border: 1px solid rgba(255, 255, 255, .65); border-radius: 30px; background: rgba(0, 0, 0, .2); }
+      .mode-toggle button { min-width: 56px; padding: 7px 10px; border: 0; border-radius: 20px; background: transparent; color: #fff; cursor: pointer; font: inherit; font-size: 12px; text-transform: uppercase; }
+      .mode-toggle button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+
+      .scroll-cue { position: absolute; top: 50%; left: 20px; z-index: 5; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; writing-mode: vertical-rl; }
+      .scroll-cue::after { display: inline-block; width: 1px; height: 48px; margin-top: 10px; background: currentColor; content: ""; }
+
+      .intro-section { display: grid; min-height: 65vh; grid-template-columns: 1fr 300px; gap: 60px; padding: 120px max(20px, calc((100vw - 1280px) / 2)); align-items: start; }
+      .intro-section h2 { max-width: 750px; margin: 0; color: var(--orange); font-family: Inter, sans-serif; font-size: clamp(48px, 7vw, 100px); font-weight: 400; letter-spacing: -.09em; line-height: .88; }
+      .intro-section p { margin: 7px 0 0; color: var(--orange); font-family: Inter, sans-serif; font-size: 20px; letter-spacing: -.05em; line-height: 1.2; }
+
+      .favorites-section {
+        position: relative;
+        width: min(100% - 40px, 736px);
+        margin: 0 auto;
+        padding: 0 0 150px;
+      }
+
+      .favorites-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(50px, 1fr));
+        gap: 0 24px;
+      }
+
+      .favorite-card {
+        display: flex;
+        min-height: 322px;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 15px;
+      }
+
+      .favorite-image {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+        background: #ede9e3;
+      }
+
+      .favorite-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+      .favorite-copy { display: grid; grid-template-columns: 1fr auto; gap: 6px 20px; align-items: start; }
+      .favorite-copy h3 { grid-column: 1 / -1; margin: 0; color: var(--orange); font-size: 18px; font-weight: 400; line-height: 1.05; text-transform: uppercase; }
+      .favorite-copy p { margin: 0; color: var(--ink); font-size: 13px; line-height: 1.25; text-transform: uppercase; }
+      .favorite-price { color: var(--orange) !important; font-size: 17px !important; }
+      .favorite-rating { color: var(--orange) !important; font-size: 14px !important; white-space: nowrap; }
+
+      .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+      .floating-element { position: absolute; top: 604px; left: 50%; z-index: 2; transform: translateX(-50%); }
+      .floating-element a { display: inline-flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--orange); border-radius: 100px; background: var(--paper); color: var(--orange); font-size: 13px; text-transform: uppercase; white-space: nowrap; }
+      .floating-element a:hover { background: var(--orange); color: #fff; }
+
+      .gallery-section { width: min(100% - 40px, 1290px); margin: 0 auto; padding: 80px 0 120px; }
+      .gallery-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+      .gallery-heading h2 { margin: 0; color: var(--orange); font-family: Inter, sans-serif; font-size: clamp(48px, 7vw, 96px); font-weight: 400; letter-spacing: -.1em; line-height: .85; }
+      .gallery-heading p { max-width: 190px; margin: 0 0 4px; color: var(--orange); font-family: Inter, sans-serif; font-size: 16px; letter-spacing: -.04em; line-height: 1.1; }
+
+      .gallery-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+      .gallery-tile { position: relative; min-height: 370px; overflow: hidden; border-radius: 24px; }
+      .gallery-tile.orange { grid-column: span 7; background: #ff5632; }
+      .gallery-tile.mint { grid-column: span 5; background: #8df0ad; }
+      .gallery-tile.brown { grid-column: span 6; min-height: 500px; background: #4a3d34; }
+      .gallery-tile.purple { display: flex; grid-column: span 6; min-height: 500px; flex-direction: column; justify-content: flex-end; padding: 34px; background: #7027ff; color: #ff73ed; }
+      .gallery-tile img { position: absolute; display: block; object-fit: cover; }
+      .gallery-tile.orange img { right: -4%; bottom: -27%; width: 88%; height: 125%; transform: rotate(-8deg); }
+      .gallery-tile.mint img { right: 0; bottom: -18%; width: 90%; height: 120%; object-position: center; }
+      .gallery-tile.brown img { bottom: -18%; left: 9%; width: 82%; height: 90%; object-position: center; mix-blend-mode: screen; opacity: .7; }
+      .gallery-label { position: absolute; top: 28px; left: 30px; z-index: 1; color: #fff; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; }
+      .gallery-tile.orange .gallery-label, .gallery-tile.mint .gallery-label { color: #171717; }
+      .gallery-title { position: absolute; top: 60px; left: 30px; z-index: 1; max-width: 300px; margin: 0; color: #fff; font-family: Inter, sans-serif; font-size: clamp(38px, 5vw, 76px); font-weight: 400; letter-spacing: -.1em; line-height: .82; }
+      .gallery-tile.orange .gallery-title, .gallery-tile.mint .gallery-title { color: #171717; }
+      .gallery-badge { position: absolute; top: 50%; left: 50%; z-index: 2; display: grid; width: 150px; height: 150px; place-items: center; transform: translate(-50%, -50%) rotate(-12deg); border-radius: 50%; background: #fffaf2; color: #805e4b; font-size: 11px; letter-spacing: .12em; text-align: center; text-transform: uppercase; }
+      .gallery-badge::after { content: '♥'; display: block; margin-top: -4px; font-size: 28px; letter-spacing: 0; }
+      .purple-stripe { position: absolute; top: 45%; right: -8%; left: -8%; padding: 15px 0; transform: rotate(-16deg); background: #ff73ed; color: #7027ff; font-size: clamp(18px, 2vw, 28px); text-align: center; text-transform: uppercase; white-space: nowrap; }
+      .purple-chips { position: absolute; right: 20px; bottom: 28px; left: 20px; display: flex; gap: 10px; overflow: hidden; }
+      .purple-chips span { padding: 12px 18px; border: 2px solid #ff73ed; border-radius: 40px; font-family: Inter, sans-serif; font-size: 16px; white-space: nowrap; }
+      .gallery-action { position: absolute; right: 22px; bottom: 22px; z-index: 3; display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 100px; background: #111; color: #fff; font-size: 13px; }
+
+      .carousel-section { overflow: hidden; padding: 70px 0 110px; background: #fff; color: #111; }
+      .carousel-heading { display: flex; width: min(100% - 40px, 1290px); margin: 0 auto 28px; align-items: end; justify-content: space-between; }
+      .carousel-heading h2 { margin: 0; font-family: Inter, sans-serif; font-size: clamp(42px, 6vw, 82px); font-weight: 400; letter-spacing: -.1em; line-height: .85; }
+      .carousel-heading p { max-width: 210px; margin: 0 0 2px; font-family: Inter, sans-serif; font-size: 16px; letter-spacing: -.04em; line-height: 1.1; }
+      .carousel-viewport { width: 100%; overflow: hidden; }
+      .carousel-track { display: flex; gap: 20px; width: max-content; padding: 0 max(20px, calc((100vw - 1290px) / 2)); transition: transform .55s cubic-bezier(.22, .61, .36, 1); }
+      .carousel-card { position: relative; display: flex; width: min(400px, 31vw); min-width: 310px; height: 498px; overflow: hidden; flex-direction: column; justify-content: flex-end; padding: 28px 20px 21px; border-radius: 20px; background: #145f71; }
+      .carousel-card.orange-card { background: #ff9b20; }
+      .carousel-card figure { position: absolute; top: 0; right: 0; left: 0; height: 365px; margin: 0; }
+      .carousel-card img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
+      .carousel-card h3 { position: relative; z-index: 1; max-width: 90%; margin: 0 0 18px; color: #111; font-family: Inter, sans-serif; font-size: clamp(27px, 3vw, 39px); font-weight: 800; letter-spacing: -.08em; line-height: .9; text-transform: uppercase; }
+      .carousel-meta { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
+      .order-button { display: inline-flex; align-items: center; gap: 12px; padding: 11px 18px; border-radius: 40px; background: #fff; color: #111; font-family: Inter, sans-serif; font-size: 18px; font-weight: 600; letter-spacing: -.06em; }
+      .order-button span { font-size: 23px; line-height: .6; }
+      .carousel-price { font-size: 16px; }
+      .carousel-controls { display: flex; justify-content: center; gap: 75px; margin-top: 65px; }
+      .carousel-arrow { border: 0; background: transparent; color: #734d3a; cursor: pointer; font-size: 34px; line-height: 1; }
+      .carousel-arrow:hover { color: var(--orange); }
+
+      .statement-section { position: relative; display: grid; min-height: 430px; place-items: center; overflow: hidden; padding: 70px 20px 90px; background: #fff; }
+      .statement-copy { width: max-content; max-width: none; margin: 0; color: #111; font-family: Inter, sans-serif; font-size: clamp(54px, 9.8vw, 150px); font-weight: 800; letter-spacing: -.105em; line-height: .82; text-align: center; text-transform: uppercase; }
+      .statement-copy span { display: block; }
+      .statement-copy .accent { color: #ff9b20; }
+      .statement-badge { position: absolute; display: grid; place-items: center; width: 135px; height: 135px; padding: 18px; border-radius: 48% 52% 44% 56%; background: #ff9b20; color: #111; font-size: 14px; font-weight: 500; line-height: 1.1; text-align: center; transform: rotate(-14deg); }
+      .statement-badge strong { display: block; font-size: 28px; font-weight: 800; }
+      .statement-badge.one { top: 54px; left: 21%; }
+      .statement-badge.two { top: 155px; left: 43%; width: 120px; height: 120px; border-radius: 50%; transform: rotate(10deg); }
+      .statement-badge.three { right: 5%; bottom: 44px; width: 155px; height: 92px; border-radius: 48% 52% 54% 46%; background: #145f71; transform: rotate(12deg); }
+
+      .detox-bento-wrap { position: relative; display: flex; width: 100%; height: 100vh; min-height: 680px; align-items: center; justify-content: center; overflow: hidden; background: #f7f6f4; }
+      .detox-bento-gallery { position: relative; width: 100%; height: 100%; flex: none; }
+      .detox-bento-item { position: relative; overflow: hidden; background: #e7e2dc; }
+      .detox-bento-item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+      .detox-bento-grid { display: grid; grid-template-columns: repeat(3, 32.5vw); grid-template-rows: repeat(4, 23vh); gap: 1vh; justify-content: center; align-content: center; }
+      .detox-bento-grid .detox-bento-item:nth-child(1) { grid-area: 1 / 1 / 3 / 2; }
+      .detox-bento-grid .detox-bento-item:nth-child(2) { grid-area: 1 / 2 / 2 / 3; }
+      .detox-bento-grid .detox-bento-item:nth-child(3) { grid-area: 2 / 2 / 4 / 3; }
+      .detox-bento-grid .detox-bento-item:nth-child(4) { grid-area: 1 / 3 / 3 / 3; }
+      .detox-bento-grid .detox-bento-item:nth-child(5) { grid-area: 3 / 1 / 3 / 2; }
+      .detox-bento-grid .detox-bento-item:nth-child(6) { grid-area: 3 / 3 / 5 / 4; }
+      .detox-bento-grid .detox-bento-item:nth-child(7) { grid-area: 4 / 1 / 5 / 2; }
+      .detox-bento-grid .detox-bento-item:nth-child(8) { grid-area: 4 / 2 / 5 / 3; }
+      .detox-bento-content { padding: 100px max(20px, calc((100vw - 900px) / 2)); background: #fff; }
+      .detox-bento-content h2 { margin: 0 0 30px; color: var(--orange); font-family: Inter, sans-serif; font-size: clamp(48px, 7vw, 96px); font-weight: 400; letter-spacing: -.1em; line-height: .85; }
+      .detox-bento-content p { max-width: 760px; margin: 0 0 22px; color: #333; font-size: 16px; line-height: 1.5; }
+
+      .testimonials-section { min-height: 760px; padding: 70px max(20px, calc((100vw - 1260px) / 2)) 55px; overflow: hidden; background: #f7f6f4; color: #242422; }
+      .testimonials-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+      .testimonials-kicker { margin: 0 0 14px; color: #77766f; font-size: 10px; font-weight: 600; letter-spacing: .14em; }
+      .testimonials-header h2 { margin: 0; font-family: Inter, sans-serif; font-size: clamp(42px, 5vw, 70px); font-weight: 400; letter-spacing: -.075em; line-height: .95; }
+      .testimonial-arrows { display: flex; gap: 8px; }
+      .testimonial-arrow { display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: #242422; color: #fff; cursor: pointer; }
+      .testimonial-arrow:hover { background: var(--orange); }
+      .testimonial-arrow svg { width: 20px; height: 20px; }
+      .testimonials-stage { position: relative; height: 430px; margin-top: 38px; }
+      .testimonial-card { position: absolute; top: 24px; left: 50%; display: flex; width: min(460px, 78vw); height: 365px; padding: 30px; flex-direction: column; gap: 22px; border-radius: 22px; color: #33321f; box-shadow: 0 16px 30px -20px rgba(30, 30, 20, .3); transition: transform .6s cubic-bezier(.22, 1, .36, 1), opacity .6s ease, filter .6s ease; transform: translateX(-50%); }
+      .testimonial-card[data-color="yellow"] { background: #f2e890; }
+      .testimonial-card[data-color="blue"] { background: #d5e4ef; }
+      .testimonial-card[data-color="lilac"] { background: #e6e0f4; }
+      .testimonial-card[data-color="green"] { background: #e3f0d9; }
+      .testimonial-card[data-color="peach"] { background: #f5ddd1; }
+      .testimonial-card.is-side { filter: saturate(.78); opacity: .75; }
+      .testimonial-card.is-hidden { opacity: 0; pointer-events: none; }
+      .testimonial-topline, .testimonial-person { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .testimonial-company { font-family: Inter, sans-serif; font-size: 12px; font-weight: 600; }
+      .testimonial-stars { display: flex; gap: 2px; font-size: 14px; }
+      .testimonial-quote { flex: 1; margin: 0; font-family: Inter, sans-serif; font-size: clamp(22px, 2.2vw, 28px); font-weight: 400; letter-spacing: -.045em; line-height: 1.08; }
+      .testimonial-quote mark { padding: 0 3px; border-radius: 4px; background: #fff8cb; color: inherit; }
+      .testimonial-card[data-color="blue"] .testimonial-quote mark { background: #f9fbff; }
+      .testimonial-card[data-color="lilac"] .testimonial-quote mark { background: #fff; }
+      .testimonial-card[data-color="green"] .testimonial-quote mark { background: #fffbd6; }
+      .testimonial-card[data-color="peach"] .testimonial-quote mark { background: #fff7ee; }
+      .testimonial-person { justify-content: flex-start; padding-top: 17px; border-top: 1px solid currentColor; }
+      .testimonial-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+      .testimonial-avatar.initials { display: grid; place-items: center; flex: 0 0 42px; background: #7d9aa3; color: #fff; font-family: Inter, sans-serif; font-size: 13px; font-weight: 700; }
+      .testimonial-card:not(.is-real-review) { display: none; }
+      .testimonial-name { font-size: 13px; font-weight: 600; }
+      .testimonial-role { font-size: 13px; opacity: .7; }
+      .testimonials-footer { display: flex; align-items: center; gap: 16px; padding: 0 10px 8px; }
+      .testimonial-count { color: #77766f; font-size: 12px; font-variant-numeric: tabular-nums; }
+      .testimonial-dots { display: flex; gap: 2px; }
+      .testimonial-dot { display: grid; width: 24px; height: 28px; place-items: center; border: 0; background: transparent; cursor: pointer; }
+      .testimonial-dot span { width: 6px; height: 6px; border-radius: 99px; background: #d8d7d1; transition: width .25s ease, background .25s ease; }
+      .testimonial-dot[aria-pressed="true"] span { width: 18px; background: #242422; }
+
+      .faq-section { position: relative; min-height: 900px; padding: 80px max(20px, calc((100vw - 1100px) / 2)) 110px; overflow: hidden; background: #075b46; color: #ff9bc9; }
+      .faq-section::after { position: absolute; top: 0; right: 0; bottom: 0; width: 4px; background: #ff73ba; content: ""; }
+      .faq-heading { position: relative; z-index: 1; margin: 0 auto 60px; color: #ff9bc9; font-family: Inter, sans-serif; font-size: clamp(54px, 8vw, 115px); font-weight: 800; letter-spacing: -.105em; line-height: .83; text-align: center; text-transform: uppercase; }
+      .faq-heading span { display: block; }
+      .faq-heading .faq-accent { color: #fff; }
+      .faq-open-order { position: absolute; top: 22px; left: 50%; z-index: 2; display: inline-flex; align-items: center; gap: 14px; padding: 14px 16px; border: 2px solid #ff9bc9; border-radius: 18px; background: #075b46; color: #ff9bc9; font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; transform: translateX(-50%) rotate(-1deg); }
+      .faq-open-order::before { width: 8px; height: 8px; border-radius: 50%; background: #9bf6b5; content: ""; }
+      .faq-open-order span { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; background: #ffb4d5; color: #075b46; font-size: 24px; }
+      .faq-list { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+      .faq-item { margin-bottom: 16px; border: 1px solid #ffb1d1; border-radius: 18px; overflow: hidden; }
+      .faq-question { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 18px; background: transparent; color: #ffb1d1; cursor: pointer; font-family: Inter, sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -.045em; text-align: left; }
+      .faq-question::after { content: "+"; font-size: 34px; font-weight: 400; line-height: .7; }
+      .faq-item[open] .faq-question::after { content: "−"; }
+      .faq-answer { max-width: 680px; padding: 0 18px 22px; color: #ffb1d1; font-family: Inter, sans-serif; font-size: 16px; line-height: 1.25; }
+      .faq-answer p { margin: 0; }
+
+      .site-footer { position: relative; min-height: 760px; padding: 36px 42px 18px; overflow: hidden; background: linear-gradient(145deg, #fafaf7 0%, #e8eef0 48%, #c7d8e5 100%); color: #222625; }
+      .footer-atmosphere { position: absolute; inset: 0; background: linear-gradient(145deg, rgba(255, 255, 255, .32), rgba(180, 211, 232, .3)); pointer-events: none; }
+      .footer-spotlight { position: absolute; top: 50%; left: 50%; width: 540px; height: 530px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .96) 0%, rgba(190, 217, 239, .74) 30%, rgba(171, 207, 232, .24) 52%, rgba(205, 222, 229, 0) 74%); transform: translate(-50%, -48%); pointer-events: none; }
+      .footer-top { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 28px; border-bottom: 1px solid rgba(34, 38, 37, .2); }
+      .footer-title { margin: 0; font-family: Inter, sans-serif; font-size: clamp(58px, 7vw, 100px); font-weight: 500; letter-spacing: -.095em; line-height: .9; }
+      .footer-contact { display: grid; width: 76px; height: 76px; place-items: center; border: 1px solid rgba(34, 38, 37, .24); border-radius: 50%; color: inherit; font-size: 32px; transition: transform .3s ease, background .3s ease; }
+      .footer-contact:hover { background: #fff; transform: rotate(45deg); }
+      .footer-body { position: relative; z-index: 1; display: grid; min-height: 520px; grid-template-columns: 1fr 1.2fr 1fr; align-items: center; }
+      .footer-link-group { align-self: start; padding-top: 34px; }
+      .footer-link-group h3 { margin: 0 0 24px; color: #6d7776; font-size: 12px; font-weight: 400; }
+      .footer-link-group a { display: block; width: max-content; margin-bottom: 17px; color: inherit; font-family: Inter, sans-serif; font-size: 22px; letter-spacing: -.05em; }
+      .footer-link-group a:hover { color: var(--orange); }
+      .footer-character { position: relative; align-self: end; justify-self: center; width: min(330px, 27vw); height: min(410px, 34vw); border-radius: 49% 51% 47% 53% / 42% 39% 61% 58%; background: linear-gradient(135deg, #fff 0%, #94999a 34%, #f7f7f3 51%, #626869 72%, #dce6ef 100%); box-shadow: inset -22px -18px 32px rgba(30, 34, 37, .4), inset 21px 17px 32px rgba(255, 255, 255, .85), 18px 28px 30px rgba(65, 95, 115, .2); transform: rotate(-7deg); transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+      .footer-character::before { position: absolute; top: 4%; right: 20%; width: 28%; height: 48%; border-radius: 60% 40% 55% 45%; background: linear-gradient(135deg, rgba(255, 255, 255, .9), transparent); content: ""; transform: rotate(24deg); }
+      .footer-eye { position: absolute; top: 48%; width: 47px; height: 47px; overflow: hidden; border-radius: 50%; background: radial-gradient(circle at 35% 29%, #fff 0 7%, #212831 8% 37%, #080c10 65%); box-shadow: 0 5px 8px rgba(0, 0, 0, .25); transition: transform .18s ease; }
+      .footer-eye.left { left: 29%; }
+      .footer-eye.right { right: 26%; }
+      .footer-bottom { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding-top: 18px; border-top: 1px solid rgba(34, 38, 37, .2); color: #556160; font-size: 12px; }
+      .footer-legal { display: flex; gap: 28px; }
+      .footer-legal a:hover { color: var(--orange); }
+
+      @media (max-width: 680px) {
+        .promo-bar { min-height: 34px; font-size: 11px; }
+        .site-nav { top: 34px; padding: 8px 14px; }
+        .nav-inner { grid-template-columns: 1fr auto 1fr; row-gap: 0; min-height: 0; }
+        .brand { grid-column: 2; grid-row: 1; justify-self: center; font-size: 26px; }
+        .brand-logo { width: 42px; height: 42px; }
+        .menu-link { grid-column: 1; grid-row: 1; }
+        .nav-actions { grid-column: 3; grid-row: 1; justify-self: end; justify-content: flex-end; gap: 12px; }
+        .socials { gap: 13px; }
+        .edit-link { display: none; }
+        .video-hero { min-height: 900px; }
+        .hero-sticky { min-height: 620px; }
+        .frame-stage { width: 100%; height: 100%; }
+        .hero-content { width: calc(100% - 40px); padding-bottom: 100px; }
+        .hero-content h1 { font-size: clamp(58px, 17vw, 105px); }
+        .hero-content p { margin-left: 0; font-size: 16px; }
+        .scroll-cue { display: none; }
+        .hero-controls { right: 20px; bottom: 26px; left: 20px; justify-content: space-between; }
+        .intro-section { display: block; min-height: 70vh; padding: 80px 20px; }
+        .intro-section p { max-width: 290px; margin-top: 30px; font-size: 17px; }
+        .favorites-section { width: min(100% - 40px, 520px); padding-bottom: 130px; }
+        .favorites-grid { gap: 34px 14px; }
+        .favorite-card { min-height: 260px; gap: 11px; }
+        .favorite-image { height: 165px; }
+        .favorite-copy { display: block; }
+        .favorite-copy h3 { margin-bottom: 8px; font-size: 14px; }
+        .favorite-copy p { margin-bottom: 6px; font-size: 11px; }
+        .favorite-rating { float: right; }
+        .floating-element { top: 520px; }
+        .gallery-section { width: calc(100% - 40px); padding: 55px 0 80px; }
+        .gallery-heading { display: block; margin-bottom: 18px; }
+        .gallery-heading p { margin-top: 20px; }
+        .gallery-grid { grid-template-columns: 1fr; gap: 14px; }
+        .gallery-tile.orange, .gallery-tile.mint, .gallery-tile.brown, .gallery-tile.purple { grid-column: auto; min-height: 360px; }
+        .gallery-tile.brown, .gallery-tile.purple { min-height: 400px; }
+        .gallery-tile.purple { padding: 24px; }
+        .gallery-title { top: 48px; left: 22px; }
+        .gallery-label { top: 20px; left: 22px; }
+        .purple-chips { right: 12px; bottom: 18px; left: 12px; }
+        .carousel-section { padding: 55px 0 80px; }
+        .carousel-heading { display: block; width: calc(100% - 40px); margin-bottom: 22px; }
+        .carousel-heading p { margin-top: 20px; }
+        .carousel-track { gap: 14px; padding: 0 20px; }
+        .carousel-card { width: 78vw; min-width: 78vw; height: 440px; }
+        .carousel-card figure { height: 310px; }
+        .carousel-card h3 { font-size: 28px; }
+        .order-button { font-size: 16px; }
+        .carousel-controls { margin-top: 45px; }
+        .statement-section { min-height: 390px; padding: 60px 10px 80px; }
+        .statement-copy { width: 100%; font-size: clamp(42px, 12vw, 74px); }
+        .statement-badge { width: 94px; height: 94px; padding: 10px; font-size: 10px; }
+        .statement-badge strong { font-size: 20px; }
+        .statement-badge.one { top: 45px; left: 5%; }
+        .statement-badge.two { top: 160px; left: 40%; width: 85px; height: 85px; }
+        .statement-badge.three { right: 2%; bottom: 30px; width: 108px; height: 65px; }
+        .detox-bento-wrap { min-height: 580px; height: 100vh; }
+        .detox-bento-grid { grid-template-columns: repeat(2, 46vw); grid-template-rows: repeat(4, 22vh); }
+        .detox-bento-grid .detox-bento-item:nth-child(1) { grid-area: 1 / 1 / 3 / 2; }
+        .detox-bento-grid .detox-bento-item:nth-child(2) { grid-area: 1 / 2 / 2 / 3; }
+        .detox-bento-grid .detox-bento-item:nth-child(3) { grid-area: 2 / 2 / 4 / 3; }
+        .detox-bento-grid .detox-bento-item:nth-child(4) { grid-area: 3 / 1 / 4 / 2; }
+        .detox-bento-grid .detox-bento-item:nth-child(5) { grid-area: 3 / 2 / 4 / 3; }
+        .detox-bento-grid .detox-bento-item:nth-child(6) { grid-area: 4 / 1 / 5 / 2; }
+        .detox-bento-grid .detox-bento-item:nth-child(7) { grid-area: 4 / 2 / 5 / 3; }
+        .detox-bento-grid .detox-bento-item:nth-child(8) { display: none; }
+        .detox-bento-content { padding: 75px 20px; }
+        .detox-bento-content p { font-size: 14px; }
+        .testimonials-section { min-height: 690px; padding: 65px 20px 35px; }
+        .testimonials-header h2 { font-size: 42px; }
+        .testimonial-arrows { gap: 6px; }
+        .testimonial-arrow { width: 38px; height: 38px; }
+        .testimonials-stage { height: 395px; margin-top: 28px; }
+        .testimonial-card { width: min(430px, calc(100vw - 40px)); height: 340px; padding: 24px; }
+        .testimonial-card.is-side { opacity: .3; }
+        .faq-section { min-height: 760px; padding: 60px 20px 80px; }
+        .faq-heading { margin-bottom: 48px; font-size: clamp(46px, 13vw, 76px); }
+        .faq-open-order { top: 18px; padding: 10px 12px; font-size: 13px; }
+        .faq-open-order span { width: 30px; height: 30px; font-size: 20px; }
+        .faq-question { padding: 18px 16px; font-size: 17px; }
+        .faq-answer { padding: 0 16px 18px; font-size: 14px; }
+        .site-footer { min-height: 760px; padding: 28px 20px 16px; }
+        .footer-title { font-size: 58px; }
+        .footer-contact { width: 58px; height: 58px; font-size: 25px; }
+        .footer-body { min-height: 560px; grid-template-columns: 1fr 1fr; align-items: stretch; }
+        .footer-link-group { padding-top: 28px; }
+        .footer-link-group a { font-size: 17px; }
+        .footer-character { position: absolute; right: 50%; bottom: 45px; width: 205px; height: 260px; transform: translateX(50%) rotate(-7deg); }
+        .footer-eye { width: 32px; height: 32px; }
+        .footer-bottom { gap: 12px; align-items: flex-start; flex-direction: column; }
+      }
+    </style>
+    <link rel="stylesheet" href="search.css" />
+    <script src="search.js" defer></script>
+  </head>
+  <body>
+    <div class="promo-bar">20% on meals this week — recharge daily</div>
+
+    <nav class="site-nav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a class="menu-link" href="menu.html#menu">Menu <span class="menu-count">6</span></a>
+        <a class="brand" href="index.html" aria-label="Habibi home"><img class="brand-logo" src="Habibi%20logo.svg" alt="Habibi Halal Restaurant" /></a>
+        <div class="nav-actions">
+          <div class="socials" aria-label="Utility links">
+            <a class="social-link" href="#search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"/><path d="m15.5 15.5 4.5 4.5"/></svg></a>
+            <a class="social-link" href="#account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.8-3.5 3-5.2 6.5-5.2s5.7 1.7 6.5 5.2"/></svg></a>
+            <a class="social-link" id="open-cart" href="checkout.html" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h2l1.7 9.2a2 2 0 0 0 2 1.6h6.8a2 2 0 0 0 1.9-1.4L20 8H7"/><circle cx="10" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg><span class="cart-count" id="cart-count" hidden>0</span></a>
+          </div>
+          <a class="edit-link" href="menu.html#menu">Explore menu <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="video-hero" id="about" aria-label="Day and night hero videos">
+        <div class="hero-sticky">
+          <div class="frame-stage" id="frame-stage">
+            <img class="hero-frame" id="hero-frame" src="assets/frames/day/frame-0001.webp" alt="Daytime Habibi Haven cafe" />
+          </div>
+          <div class="scroll-cue">Scroll to explore</div>
+          <div class="hero-content">
+            <h1>taste,<br />share,<br />belong</h1>
+            <p>A halal dining haven with generous plates, warm hospitality, and flavours worth sharing.</p>
+          </div>
+          <div class="hero-controls">
+            <span class="mode-label">Choose your moment</span>
+            <div class="mode-toggle" role="group" aria-label="Choose day or night video">
+              <button type="button" data-mode-button="day" aria-pressed="true">Day</button>
+              <button type="button" data-mode-button="night" aria-pressed="false">Night</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="intro-section" id="menu-preview">
+        <h2>come hungry,<br />leave happy.</h2>
+        <p>From family dinners to late-night catch-ups, Habibi Haven brings together generous portions, warm service, and food made to be shared. <a href="menu.html#menu">See the full menu →</a></p>
+      </section>
+
+      <section class="favorites-section" aria-labelledby="favorites-title">
+        <h2 id="favorites-title" class="visually-hidden">Favorites</h2>
+        <div class="favorites-grid">
+          <article class="favorite-card">
+            <div class="favorite-image"><img src="Food/Direktor.jpg" alt="Direktor meal" /></div>
+            <div class="favorite-copy"><h3>Direktor</h3><p class="favorite-price">$11.00</p><p class="favorite-rating">★ 4.8</p></div>
+          </article>
+          <article class="favorite-card">
+            <div class="favorite-image"><img src="Food/Curry%20%26%20rice%20meal.jpg" alt="Curry and rice meal" /></div>
+            <div class="favorite-copy"><h3>Curry &amp; rice meal</h3><p class="favorite-price">$4.50</p><p class="favorite-rating">★ 4.7</p></div>
+          </article>
+          <article class="favorite-card">
+            <div class="favorite-image"><img src="Food/Clubhouse%20sandwich.jpg" alt="Clubhouse sandwich" /></div>
+            <div class="favorite-copy"><h3>Clubhouse sandwich</h3><p class="favorite-price">$20.50</p><p class="favorite-rating">★ 5.0</p></div>
+          </article>
+          <article class="favorite-card">
+            <div class="favorite-image"><img src="Food/chickenbiryani.jpg" alt="Chicken biryani" /></div>
+            <div class="favorite-copy"><h3>chickenbiryani</h3><p class="favorite-price">$8.50</p><p class="favorite-rating">★ 4.6</p></div>
+          </article>
+        </div>
+        <div class="floating-element"><a href="menu.html#menu">View full menu <span aria-hidden="true">→</span></a></div>
+      </section>
+
+      <section class="gallery-section" aria-labelledby="gallery-title">
+        <div class="gallery-heading">
+          <h2 id="gallery-title">made to share,<br />made to remember.</h2>
+          <p>A little look inside the warm, welcoming world of Habibi Haven.</p>
+        </div>
+        <div class="gallery-grid">
+          <article class="gallery-tile orange">
+            <span class="gallery-label">01 / From the grill</span>
+            <h3 class="gallery-title">rich<br />flavours</h3>
+            <img src="Food/lamb%20mandi.jpg" alt="Lamb mandi" />
+          </article>
+          <article class="gallery-tile mint">
+            <span class="gallery-label">02 / Warm moments</span>
+            <h3 class="gallery-title">good<br />company</h3>
+            <img src="Food/lamb%20chops.jpg" alt="Lamb chops" />
+          </article>
+          <article class="gallery-tile brown">
+            <span class="gallery-label">03 / Shared plates</span>
+            <img src="Food/rice%20%26%20koma.jpg" alt="Rice and koma" />
+            <div class="gallery-badge">made for<br />your table</div>
+          </article>
+          <article class="gallery-tile purple">
+            <span class="gallery-label">04 / Visit us</span>
+            <div class="purple-stripe">★ new menu &nbsp; ★ new menu &nbsp; ★ new menu &nbsp; ★</div>
+            <div class="purple-chips"><span>Green Street</span><span>Brooklyn</span><span>8am — 8pm</span></div>
+            <a class="gallery-action" href="menu.html#menu">Explore menu <span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+      </section>
+
+      <section class="carousel-section" aria-labelledby="carousel-title">
+        <div class="carousel-heading">
+          <h2 id="carousel-title">find your<br />favourite plate.</h2>
+          <p>From hearty mains to easy favourites, there’s something for every appetite.</p>
+        </div>
+        <div class="carousel-viewport">
+          <div class="carousel-track" id="carousel-track">
+            <article class="carousel-card">
+              <figure><img src="Food/steved%20fish%20pilau.jpg" alt="Steved fish pilau" /></figure>
+              <h3>steved fish pilau</h3><div class="carousel-meta"><a class="order-button" href="menu.html#menu">Order now <span>→</span></a><span class="carousel-price">$11.00 USD</span></div>
+            </article>
+            <article class="carousel-card orange-card">
+              <figure><img src="Food/Direktor.jpg" alt="Direktor meal" /></figure>
+              <h3>Direktor</h3><div class="carousel-meta"><a class="order-button" href="menu.html#menu">Order now <span>→</span></a><span class="carousel-price">$4.50 USD</span></div>
+            </article>
+            <article class="carousel-card">
+              <figure><img src="Food/Curry%20%26%20rice%20meal.jpg" alt="Curry and rice meal" /></figure>
+              <h3>Curry &amp; rice meal</h3><div class="carousel-meta"><a class="order-button" href="menu.html#menu">Order now <span>→</span></a><span class="carousel-price">$20.50 USD</span></div>
+            </article>
+            <article class="carousel-card orange-card">
+              <figure><img src="Food/Clubhouse%20sandwich.jpg" alt="Clubhouse sandwich" /></figure>
+              <h3>Clubhouse sandwich</h3><div class="carousel-meta"><a class="order-button" href="menu.html#menu">Order now <span>→</span></a><span class="carousel-price">$8.50 USD</span></div>
+            </article>
+          </div>
+        </div>
+        <div class="carousel-controls" aria-label="Carousel controls">
+          <button class="carousel-arrow" id="carousel-prev" type="button" aria-label="Previous products">←</button>
+          <button class="carousel-arrow" id="carousel-next" type="button" aria-label="Next products">→</button>
+        </div>
+      </section>
+
+      <section class="statement-section" aria-label="Habibi Haven promise">
+        <p class="statement-copy">
+          <span>from the first bite</span>
+          <span class="accent">to the last shared</span>
+          <span class="accent">plate we make every</span>
+          <span class="accent">moment count</span>
+        </p>
+        <div class="statement-badge one"><strong>98%</strong>Guests leave happy</div>
+        <div class="statement-badge two">☼<br />Good moments start<br />with good food</div>
+        <div class="statement-badge three"><strong>12K+</strong>Plates served</div>
+      </section>
+
+      <section class="detox-bento-wrap">
+        <div class="detox-bento-gallery detox-bento-grid" id="gallery-8" aria-label="Habibi Haven moments gallery">
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%281%29.webp" alt="Habibi Haven fried fish meal" /></div>
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%282%29.webp" alt="Habibi Haven clubhouse sandwich" /></div>
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%283%29.webp" alt="Habibi Haven table setting" /></div>
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%284%29.webp" alt="Habibi Haven lamb rice platter" /></div>
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%285%29.webp" alt="Habibi Haven tea service" /></div>
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%286%29.webp" alt="Habibi Haven curry and rice meal" /></div>
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%288%29.webp" alt="Habibi Haven pizza" /></div>
+          <div class="detox-bento-item"><img src="gallery%20images/unnamed%20%2812%29.webp" alt="Habibi Haven curry and rice" /></div>
+        </div>
+      </section>
+      <section class="detox-bento-content">
+        <h2>good food,<br />good feeling.</h2>
+        <p>Every plate at Habibi Haven is made for generous appetites, easy conversation, and the kind of meal you remember long after the last bite.</p>
+        <p>Join us on Koinange Street for halal dining, warm hospitality, and dishes made to share.</p>
+      </section>
+
+      <section class="testimonials-section" aria-labelledby="testimonials-title">
+        <header class="testimonials-header">
+          <div>
+            <p class="testimonials-kicker">A FEW WORDS FROM GOOD PEOPLE</p>
+            <h2 id="testimonials-title">Good things get<br />people talking.</h2>
+          </div>
+          <div class="testimonial-arrows" role="group" aria-label="Review navigation">
+            <button class="testimonial-arrow" id="testimonial-prev" type="button" aria-label="Previous review"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15M12 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 12 12)" /></svg></button>
+            <button class="testimonial-arrow" id="testimonial-next" type="button" aria-label="Next review"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15M12 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></button>
+          </div>
+        </header>
+        <div class="testimonials-stage" id="testimonials-stage">
+          <article class="testimonial-card" data-color="yellow"><div class="testimonial-topline"><span class="testimonial-company">Daylight Studio</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“Good habits get out of your way. Habibi Haven gave us the clarity to <mark>feel better</mark>, together.”</blockquote><div class="testimonial-person"><img class="testimonial-avatar" src="https://i.pravatar.cc/84?img=47" alt="Mila Turner" /><div><div class="testimonial-name">Mila Turner</div><div class="testimonial-role">Founder</div></div></div></article>
+          <article class="testimonial-card" data-color="blue"><div class="testimonial-topline"><span class="testimonial-company">Another Office</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★☆</span></div><blockquote class="testimonial-quote">“We came looking for a <mark>simpler workflow</mark>. We left with a completely different level of confidence.”</blockquote><div class="testimonial-person"><img class="testimonial-avatar" src="https://i.pravatar.cc/84?img=32" alt="Zara Blake" /><div><div class="testimonial-name">Zara Blake</div><div class="testimonial-role">Co-founder</div></div></div></article>
+          <article class="testimonial-card" data-color="lilac"><div class="testimonial-topline"><span class="testimonial-company">Ordinary People</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“It feels like someone thought about every little detail. Our whole team <mark>noticed the difference.</mark>”</blockquote><div class="testimonial-person"><img class="testimonial-avatar" src="https://i.pravatar.cc/84?img=12" alt="Theo Parker" /><div><div class="testimonial-name">Theo Parker</div><div class="testimonial-role">Design Lead</div></div></div></article>
+          <article class="testimonial-card" data-color="green"><div class="testimonial-topline"><span class="testimonial-company">Field Notes</span><span class="testimonial-stars" aria-label="4 out of 5 stars">★★★★☆</span></div><blockquote class="testimonial-quote">“The easiest part of our day is choosing something <mark>fresh and bright</mark> from the menu.”</blockquote><div class="testimonial-person"><img class="testimonial-avatar" src="https://i.pravatar.cc/84?img=5" alt="Nia Collins" /><div><div class="testimonial-name">Nia Collins</div><div class="testimonial-role">Creative Director</div></div></div></article>
+          <article class="testimonial-card" data-color="peach"><div class="testimonial-topline"><span class="testimonial-company">Sunday Club</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“A little reset in the middle of the city. <mark>We keep coming back</mark> for the good energy.”</blockquote><div class="testimonial-person"><img class="testimonial-avatar" src="https://i.pravatar.cc/84?img=25" alt="Ari Morgan" /><div><div class="testimonial-name">Ari Morgan</div><div class="testimonial-role">Community Lead</div></div></div></article>
+          <article class="testimonial-card is-real-review" data-color="yellow"><div class="testimonial-topline"><span class="testimonial-company">Google review</span><span class="testimonial-stars" aria-label="4 out of 5 stars">★★★★☆</span></div><blockquote class="testimonial-quote">“Generous portions, food served at the right temperature, and <mark>prompt, friendly service</mark>. The cinnamon latte was excellent too.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar initials" aria-label="Farida Kerubo">FK</span><div><div class="testimonial-name">Farida Kerubo</div><div class="testimonial-role">Local Guide</div></div></div></article>
+          <article class="testimonial-card is-real-review" data-color="blue"><div class="testimonial-topline"><span class="testimonial-company">Google review</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“A beautiful evening with <mark>professional, genuinely friendly service</mark> from reservation through payment, plus a welcoming atmosphere.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar initials" aria-label="JeyzDavido">JD</span><div><div class="testimonial-name">JeyzDavido</div><div class="testimonial-role">Local Guide</div></div></div></article>
+          <article class="testimonial-card is-real-review" data-color="lilac"><div class="testimonial-topline"><span class="testimonial-company">Google review</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“The food was outstanding and the atmosphere wonderfully warm. The mandi, Thai rice, cheesecake, Oreo shake, and dawa were <mark>all memorable</mark>.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar initials" aria-label="Moign Khawaja">MK</span><div><div class="testimonial-name">Moign Khawaja</div><div class="testimonial-role">Local Guide</div></div></div></article>
+          <article class="testimonial-card is-real-review" data-color="green"><div class="testimonial-topline"><span class="testimonial-company">Google review</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“Cool, radiant ambience, soft music, fair prices, and food worth recommending. <mark>A place I’d happily visit again</mark>.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar initials" aria-label="Grace Wanjugu">GW</span><div><div class="testimonial-name">Grace Wanjugu</div><div class="testimonial-role">Local Guide</div></div></div></article>
+          <article class="testimonial-card is-real-review" data-color="peach"><div class="testimonial-topline"><span class="testimonial-company">Google review</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“A halal-friendly restaurant on Koinange Street with a menu that makes choosing where to dine <mark>much easier</mark>.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar initials" aria-label="Guiding Star Zora">GZ</span><div><div class="testimonial-name">GUIDING STAR ZORA</div><div class="testimonial-role">Local Guide</div></div></div></article>
+          <article class="testimonial-card is-real-review" data-color="yellow"><div class="testimonial-topline"><span class="testimonial-company">Google review</span><span class="testimonial-stars" aria-label="4 out of 5 stars">★★★★☆</span></div><blockquote class="testimonial-quote">“Really loved the place—<mark>great portions and good food</mark>. We enjoyed sharing a plate with a drink.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar initials" aria-label="Sylvia Njogu">SN</span><div><div class="testimonial-name">Sylvia Njogu</div><div class="testimonial-role">Local Guide</div></div></div></article>
+          <article class="testimonial-card is-real-review" data-color="blue"><div class="testimonial-topline"><span class="testimonial-company">Google review</span><span class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</span></div><blockquote class="testimonial-quote">“Beautifully presented dishes full of flavour, with warm, attentive service. <mark>A truly exceptional dining experience</mark>.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar initials" aria-label="Susan Gakii">SG</span><div><div class="testimonial-name">Susan Gakii</div><div class="testimonial-role">Google reviewer</div></div></div></article>
+        </div>
+        <footer class="testimonials-footer"><span class="testimonial-count" id="testimonial-count">01 / 07</span><div class="testimonial-dots" id="testimonial-dots" role="group" aria-label="Choose a review"></div></footer>
+      </section>
+
+      <section class="faq-section" aria-labelledby="faq-title">
+        <button class="faq-open-order" type="button">Open for order <span aria-hidden="true">+</span></button>
+        <h2 class="faq-heading" id="faq-title"><span>everything you're</span><span class="faq-accent">wondering, answered</span><span>before your first sip.</span></h2>
+        <div class="faq-list">
+          <details class="faq-item"><summary class="faq-question">Are the juices actually fresh?</summary><div class="faq-answer"><p>Yes. We cold-press our produce daily and keep every bottle chilled until it reaches you.</p></div></details>
+          <details class="faq-item"><summary class="faq-question">Can I come in without an order?</summary><div class="faq-answer"><p>Absolutely. Walk-ins are welcome every day from 8 AM to 8 PM.</p></div></details>
+          <details class="faq-item"><summary class="faq-question">Do you have options for different diets?</summary><div class="faq-answer"><p>Our menu includes vegan, gluten-free, and naturally sweetened options. Ask our team for today’s recommendations.</p></div></details>
+          <details class="faq-item" open><summary class="faq-question">Can I bring my dog?</summary><div class="faq-answer"><p>If they’re friendly and well-behaved, they’re more than welcome to join your Habibi Haven stop.</p></div></details>
+          <details class="faq-item"><summary class="faq-question">Do you offer delivery?</summary><div class="faq-answer"><p>Yes. Delivery is available within the neighborhood during opening hours.</p></div></details>
+        </div>
+      </section>
+
+      <footer class="site-footer" id="contact">
+        <div class="footer-atmosphere"></div>
+        <div class="footer-spotlight"></div>
+        <div class="footer-top">
+          <h2 class="footer-title">Let’s talk.</h2>
+          <a class="footer-contact" href="mailto:hello@habibihaven.example" aria-label="Send us an email">↗</a>
+        </div>
+        <div class="footer-body">
+          <nav class="footer-link-group" aria-label="Explore">
+            <h3>Explore</h3>
+            <a href="#about">Home</a>
+            <a href="menu.html#menu">Menu</a>
+            <a href="#menu-preview">About</a>
+            <a href="#faq-title">FAQs</a>
+          </nav>
+          <div class="footer-character" id="footer-character" aria-label="Habibi Haven mascot">
+            <span class="footer-eye left"></span>
+            <span class="footer-eye right"></span>
+          </div>
+          <nav class="footer-link-group" aria-label="Follow">
+            <h3>Follow</h3>
+            <a href="#">Instagram</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">TikTok</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 Habibi Haven, made fresh daily.</span>
+          <div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a></div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      const hero = document.querySelector('.video-hero');
+      const frameImage = document.querySelector('#hero-frame');
+      const frameCount = 240;
+      const frameSets = { day: [], night: [] };
+      const loadedModes = new Set();
+      const modeButtons = [...document.querySelectorAll('[data-mode-button]')];
+      let selectedMode = 'day';
+      let ticking = false;
+      let targetProgress = 0;
+      let renderedProgress = 0;
+      let animationStarted = false;
+
+      function framePath(mode, index) {
+        return `assets/frames/${mode}/frame-${String(index).padStart(4, '0')}.webp`;
+      }
+
+      function preloadFrames(mode) {
+        if (loadedModes.has(mode)) return Promise.resolve();
+        const images = frameSets[mode];
+        const jobs = [];
+        for (let index = 1; index <= frameCount; index += 1) {
+          jobs.push(new Promise((resolve) => {
+            const image = new Image();
+            image.decoding = 'async';
+            image.onload = resolve;
+            image.onerror = resolve;
+            image.src = framePath(mode, index);
+            images[index - 1] = image;
+          }));
+        }
+        return Promise.all(jobs).then(() => loadedModes.add(mode));
+      }
+
+      function updateScrollMotion() {
+        const bounds = hero.getBoundingClientRect();
+        const travel = Math.max(hero.offsetHeight - window.innerHeight, 1);
+        targetProgress = Math.min(Math.max(-bounds.top / travel, 0), 1);
+        ticking = false;
+      }
+
+      function animateFrames() {
+        renderedProgress += (targetProgress - renderedProgress) * 0.14;
+        const index = Math.min(frameCount - 1, Math.floor(renderedProgress * frameCount));
+        const currentFrame = frameSets[selectedMode][index];
+        if (currentFrame?.complete) frameImage.src = currentFrame.src;
+        window.requestAnimationFrame(animateFrames);
+      }
+
+      function requestScrollMotion() {
+        if (!ticking) { window.requestAnimationFrame(updateScrollMotion); ticking = true; }
+      }
+
+      function setMode(mode) {
+        selectedMode = mode;
+        renderedProgress = targetProgress;
+        preloadFrames(mode).then(() => {
+          const index = Math.min(frameCount - 1, Math.floor(targetProgress * frameCount));
+          if (frameSets[mode][index]) frameImage.src = frameSets[mode][index].src;
+        });
+        modeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.modeButton === mode)));
+        requestScrollMotion();
+      }
+
+      modeButtons.forEach((button) => button.addEventListener('click', () => setMode(button.dataset.modeButton)));
+      window.addEventListener('scroll', requestScrollMotion, { passive: true });
+      preloadFrames('day');
+      requestScrollMotion();
+      if (!animationStarted) {
+        animationStarted = true;
+        window.requestAnimationFrame(animateFrames);
+      }
+
+      const carouselTrack = document.querySelector('#carousel-track');
+      const carouselCards = [...document.querySelectorAll('.carousel-card')];
+      let carouselIndex = 0;
+      function moveCarousel(direction) {
+        carouselIndex = Math.min(Math.max(carouselIndex + direction, 0), carouselCards.length - 1);
+        const gap = parseFloat(getComputedStyle(carouselTrack).gap) || 20;
+        const step = carouselCards[0].getBoundingClientRect().width + gap;
+        carouselTrack.style.transform = `translateX(${-carouselIndex * step}px)`;
+      }
+      document.querySelector('#carousel-prev').addEventListener('click', () => moveCarousel(-1));
+      document.querySelector('#carousel-next').addEventListener('click', () => moveCarousel(1));
+
+      const testimonialCards = [...document.querySelectorAll('.testimonial-card.is-real-review')];
+      const testimonialStage = document.querySelector('#testimonials-stage');
+      const testimonialCount = document.querySelector('#testimonial-count');
+      const testimonialDots = document.querySelector('#testimonial-dots');
+      let testimonialIndex = 0;
+      let testimonialPointerStart = null;
+      const testimonialTotal = testimonialCards.length;
+
+      function renderTestimonials() {
+        testimonialCards.forEach((card, index) => {
+          let distance = index - testimonialIndex;
+          if (distance > testimonialTotal / 2) distance -= testimonialTotal;
+          if (distance < -testimonialTotal / 2) distance += testimonialTotal;
+          const hidden = Math.abs(distance) > 2;
+          const x = distance * Math.min(330, window.innerWidth * .27);
+          const rotation = distance * -4;
+          const scale = distance === 0 ? 1 : Math.max(.78, 1 - Math.abs(distance) * .09);
+          card.classList.toggle('is-side', distance !== 0 && !hidden);
+          card.classList.toggle('is-hidden', hidden);
+          card.style.zIndex = String(10 - Math.abs(distance));
+          card.style.transform = `translateX(calc(-50% + ${x}px)) rotate(${rotation}deg) scale(${scale})`;
+        });
+        testimonialCount.textContent = `${String(testimonialIndex + 1).padStart(2, '0')} / ${String(testimonialTotal).padStart(2, '0')}`;
+        testimonialDots.querySelectorAll('button').forEach((dot, index) => dot.setAttribute('aria-pressed', String(index === testimonialIndex)));
+      }
+
+      function moveTestimonials(direction) {
+        testimonialIndex = (testimonialIndex + direction + testimonialTotal) % testimonialTotal;
+        renderTestimonials();
+      }
+
+      testimonialCards.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'testimonial-dot';
+        dot.type = 'button';
+        dot.setAttribute('aria-label', `Show review ${index + 1}`);
+        dot.setAttribute('aria-pressed', String(index === 0));
+        dot.innerHTML = '<span></span>';
+        dot.addEventListener('click', () => { testimonialIndex = index; renderTestimonials(); });
+        testimonialDots.appendChild(dot);
+      });
+
+      document.querySelector('#testimonial-prev').addEventListener('click', () => moveTestimonials(-1));
+      document.querySelector('#testimonial-next').addEventListener('click', () => moveTestimonials(1));
+      testimonialStage.addEventListener('wheel', (event) => {
+        const direction = event.deltaX > 0 || event.deltaY > 0 ? 1 : -1;
+        const shouldAdvance = Math.abs(event.deltaX) > 10 || Math.abs(event.deltaY) > 25;
+        const canMoveInside = (direction > 0 && testimonialIndex < testimonialTotal - 1) || (direction < 0 && testimonialIndex > 0);
+        if (shouldAdvance && canMoveInside) {
+          event.preventDefault();
+          moveTestimonials(direction);
+        }
+      }, { passive: false });
+      testimonialStage.addEventListener('pointerdown', (event) => { testimonialPointerStart = event.clientX; testimonialStage.setPointerCapture?.(event.pointerId); });
+      testimonialStage.addEventListener('pointerup', (event) => { if (testimonialPointerStart !== null && Math.abs(event.clientX - testimonialPointerStart) > 35) moveTestimonials(event.clientX < testimonialPointerStart ? 1 : -1); testimonialPointerStart = null; });
+      window.addEventListener('resize', renderTestimonials);
+      renderTestimonials();
+
+      const footer = document.querySelector('.site-footer');
+      const character = document.querySelector('#footer-character');
+      const footerEyes = [...document.querySelectorAll('.footer-eye')];
+      function moveMascotEyes(clientX, clientY) {
+        const bounds = character.getBoundingClientRect();
+        const x = Math.max(-1, Math.min(1, (clientX - (bounds.left + bounds.width / 2)) / (bounds.width / 2)));
+        const y = Math.max(-1, Math.min(1, (clientY - (bounds.top + bounds.height / 2)) / (bounds.height / 2)));
+        footerEyes.forEach((eye) => { eye.style.transform = `translate(${x * 7}px, ${y * 5}px)`; });
+        character.style.transform = `rotate(${-7 + x * 2}deg) translateY(${y * 3}px)`;
+      }
+      footer.addEventListener('pointermove', (event) => moveMascotEyes(event.clientX, event.clientY));
+      footer.addEventListener('pointerleave', () => {
+        footerEyes.forEach((eye) => { eye.style.transform = ''; });
+        character.style.transform = '';
+      });
+      footer.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('focus', () => {
+          const bounds = link.getBoundingClientRect();
+          moveMascotEyes(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
+        });
+      });
+
+      const siteNav = document.querySelector('.site-nav');
+      function updateNavState() { siteNav.classList.toggle('is-scrolled', window.scrollY > 32); }
+      window.addEventListener('scroll', updateNavState, { passive: true });
+      updateNavState();
+      const homeCartCount = document.querySelector('#cart-count');
+      function updateHomeCartCount() { const cart = JSON.parse(localStorage.getItem('habibiCart') || '[]'); const count = cart.reduce((total, item) => total + item.quantity, 0); homeCartCount.textContent = count; homeCartCount.hidden = count === 0; }
+      updateHomeCartCount();
+      window.addEventListener('storage', updateHomeCartCount);
+
+    </script>
+  </body>
+</html>

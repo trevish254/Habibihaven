@@ -1,0 +1,17 @@
+.search-overlay { position: fixed; inset: 0; z-index: 30; background: rgba(23,23,23,.28); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.search-overlay.is-open { opacity: 1; pointer-events: auto; }
+.search-panel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 31; display: flex; width: min(460px, 94vw); padding: 28px; flex-direction: column; background: var(--paper, #f7f6f4); box-shadow: -18px 0 40px rgba(23,61,70,.18); transform: translateX(100%); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.search-panel.is-open { transform: translateX(0); }
+.search-panel-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 22px; border-bottom: 1px solid #d8dfdf; }
+.search-panel-header h2 { margin: 0; color: var(--orange, #145f71); font-family: Inter, sans-serif; font-size: 30px; font-weight: 400; letter-spacing: -.07em; }
+.search-close { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--orange, #145f71); border-radius: 50%; background: transparent; color: var(--orange, #145f71); cursor: pointer; font-size: 22px; }
+.search-input-wrap { position: relative; margin: 24px 0 16px; }
+.search-input-wrap::before { position: absolute; top: 50%; left: 14px; color: var(--orange, #145f71); content: "⌕"; font-size: 23px; transform: translateY(-53%); }
+.search-input { width: 100%; padding: 14px 14px 14px 42px; border: 1px solid #b4c3c5; border-radius: 5px; background: #fff; color: var(--ink, #171717); font: inherit; }
+.search-results { flex: 1; overflow: auto; }
+.search-result { display: block; padding: 16px 0; border-bottom: 1px solid #d8dfdf; color: inherit; text-decoration: none; }
+.search-result:hover .search-result-title { color: var(--accent, #ff9b20); }
+.search-result-type { display: block; margin-bottom: 6px; color: var(--muted, #718084); font-size: 11px; text-transform: uppercase; }
+.search-result-title { display: block; color: var(--orange, #145f71); font-family: Inter, sans-serif; font-size: 18px; letter-spacing: -.04em; }
+.search-result-description { display: block; margin-top: 6px; color: var(--muted, #718084); font-size: 12px; line-height: 1.4; }
+.search-empty { color: var(--muted, #718084); font-size: 13px; line-height: 1.5; }

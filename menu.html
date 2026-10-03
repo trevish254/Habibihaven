@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habibi Haven</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --orange: #145f71;
+        --accent: #ff9b20;
+        --paper: #f7f6f4;
+        --ink: #161616;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body { margin: 0; min-height: 100%; }
+
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "DM Mono", monospace;
+      }
+
+      .promo-bar {
+        display: grid;
+        min-height: 40px;
+        place-items: center;
+        padding: 0 20px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 13px;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .site-nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+        background: rgba(247, 246, 244, .92);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav-inner {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        width: min(100%, 1280px);
+        min-height: 40px;
+      }
+
+      .menu-link,
+      .brand,
+      .social-link,
+      .edit-link {
+        color: var(--orange);
+        text-decoration: none;
+      }
+
+      .menu-link {
+        justify-self: start;
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      .menu-count { font-size: 12px; }
+
+      .brand {
+        justify-self: center;
+        font-family: Inter, sans-serif;
+        font-size: 30px;
+        font-weight: 400;
+        letter-spacing: -0.08em;
+        line-height: 1;
+      }
+
+      .brand-logo { display: block; width: 56px; height: 56px; object-fit: contain; background: url("Habibi%20logo.png") center / contain no-repeat; filter: brightness(0) saturate(100%) invert(81%) sepia(21%) saturate(1147%) hue-rotate(154deg) brightness(101%) contrast(91%); }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        justify-self: end;
+        gap: 20px;
+      }
+
+      .socials {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        color: var(--ink);
+      }
+
+      .social-link {
+        display: grid;
+        place-items: center;
+        width: 18px;
+        height: 18px;
+        color: var(--ink);
+      }
+
+      .social-link svg { width: 100%; height: 100%; }
+
+      .edit-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 30px;
+        padding: 7px 10px;
+        border-radius: 5px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 16px;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .edit-arrow { font-size: 20px; line-height: 0.7; }
+
+      main { display: block; }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 260px;
+        align-items: start;
+        gap: 70px;
+        width: min(100% - 40px, 756px);
+        margin: 70px auto 105px;
+      }
+
+      .hero h1 {
+        max-width: 620px;
+        margin: 0;
+        color: var(--orange);
+        font-family: Inter, sans-serif;
+        font-size: clamp(64px, 8.1vw, 126px);
+        font-weight: 400;
+        letter-spacing: -0.095em;
+        line-height: 0.9;
+      }
+
+      .hero-copy {
+        margin: 5px 0 0;
+        color: var(--orange);
+        font-family: Inter, sans-serif;
+        font-size: 20px;
+        letter-spacing: -0.055em;
+        line-height: 1.2;
+      }
+
+      .hero-copy a {
+        color: inherit;
+        text-decoration: underline dotted 2px;
+        text-underline-offset: 4px;
+      }
+
+      .menu-section {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 52px;
+        width: min(100% - 40px, 1290px);
+        margin: 0 auto;
+        scroll-margin-top: 90px;
+      }
+
+      .category-list {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 17px;
+        padding-top: 2px;
+      }
+
+      .category-list a {
+        color: var(--orange);
+        font-size: 16px;
+        line-height: 1;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .category-list a:hover { text-decoration: underline; }
+
+      .category-list sup { font-size: 11px; }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 40px 20px;
+      }
+
+      .product-card { min-width: 0; }
+      .product-card-link { position: relative; display: block; color: inherit; text-decoration: none; }
+      .card-cart { position: absolute; top: 14px; right: 14px; z-index: 2; display: grid; width: 38px; height: 38px; place-items: center; border: 0; border-radius: 50%; background: rgba(255,255,255,.94); color: var(--orange); cursor: pointer; box-shadow: 0 4px 12px rgba(23,61,70,.16); }
+      .card-cart svg { width: 19px; height: 19px; }
+      .card-cart.is-added { background: var(--accent); color: #fff; }
+      #open-cart { position: relative; }
+      .cart-count { position: absolute; top: -9px; right: -10px; display: grid; min-width: 17px; height: 17px; padding: 0 4px; place-items: center; border-radius: 10px; background: var(--accent); color: #fff; font-size: 10px; line-height: 1; }
+      .cart-overlay { position: fixed; inset: 0; z-index: 20; background: rgba(23,23,23,.28); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+      .cart-overlay.is-open { opacity: 1; pointer-events: auto; }
+      .cart-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 21; display: flex; width: min(420px, 92vw); padding: 28px; flex-direction: column; background: var(--paper); box-shadow: -18px 0 40px rgba(23,61,70,.18); transform: translateX(100%); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+      .cart-drawer.is-open { transform: translateX(0); }
+      .cart-drawer-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 22px; border-bottom: 1px solid #d8dfdf; }
+      .cart-drawer-header h2 { margin: 0; color: var(--orange); font-family: Inter, sans-serif; font-size: 30px; font-weight: 400; letter-spacing: -.07em; }
+      .cart-close { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--orange); border-radius: 50%; background: transparent; color: var(--orange); cursor: pointer; font-size: 22px; }
+      .drawer-items { flex: 1; overflow: auto; padding: 10px 0; }
+      .drawer-item { display: grid; grid-template-columns: 58px 1fr auto; gap: 12px; align-items: center; padding: 16px 0; border-bottom: 1px solid #d8dfdf; }
+      .drawer-item img { width: 58px; height: 58px; object-fit: cover; background: #ede9e3; }
+      .drawer-item h3 { margin: 0 0 6px; font-size: 13px; font-weight: 400; text-transform: uppercase; }
+      .drawer-item p { margin: 0; color: #718084; font-size: 11px; }
+      .drawer-quantity { display: flex; align-items: center; gap: 7px; margin-top: 8px; }
+      .drawer-quantity button { width: 21px; height: 21px; border: 1px solid var(--orange); border-radius: 50%; background: transparent; color: var(--orange); cursor: pointer; font: inherit; line-height: 1; }
+      .drawer-price { color: var(--orange); font-size: 12px; white-space: nowrap; }
+      .drawer-empty { color: #718084; font-size: 13px; line-height: 1.5; }
+      .drawer-empty a { color: var(--orange); }
+      .drawer-footer { padding-top: 20px; border-top: 1px solid #d8dfdf; }
+      .drawer-total { display: flex; justify-content: space-between; margin-bottom: 16px; color: var(--orange); font-size: 18px; }
+      .drawer-checkout { display: block; padding: 14px; border-radius: 5px; background: var(--accent); color: #fff; text-align: center; text-decoration: none; text-transform: uppercase; }
+
+      .product-image {
+        position: relative;
+        aspect-ratio: 0.79;
+        overflow: hidden;
+        background: #ede9e3;
+      }
+
+      .product-image.shot { background: #efd9d0; }
+
+      .product-image img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .tag {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 1;
+        padding: 6px 7px 5px;
+        border: 1px solid var(--orange);
+        border-radius: 5px;
+        color: var(--orange);
+        font-size: 13px;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .product-type {
+        margin: 13px 0 13px;
+        color: #77736f;
+        font-size: 13px;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .product-name {
+        margin: 0 0 12px;
+        color: var(--orange);
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 1.15;
+        text-transform: uppercase;
+      }
+
+      .product-description {
+        min-height: 38px;
+        margin: 0 0 13px;
+        color: var(--ink);
+        font-size: 13px;
+        line-height: 1.35;
+        text-transform: uppercase;
+      }
+
+      .product-price { margin: 0; color: #77736f; font-size: 14px; }
+
+      .site-footer { position: relative; min-height: 760px; padding: 36px 42px 18px; overflow: hidden; background: linear-gradient(145deg, #fafaf7 0%, #e8eef0 48%, #c7d8e5 100%); color: #222625; }
+      .footer-atmosphere { position: absolute; inset: 0; background: linear-gradient(145deg, rgba(255, 255, 255, .32), rgba(180, 211, 232, .3)); pointer-events: none; }
+      .footer-spotlight { position: absolute; top: 50%; left: 50%; width: 540px; height: 530px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .96) 0%, rgba(190, 217, 239, .74) 30%, rgba(171, 207, 232, .24) 52%, rgba(205, 222, 229, 0) 74%); transform: translate(-50%, -48%); pointer-events: none; }
+      .footer-top { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 28px; border-bottom: 1px solid rgba(34, 38, 37, .2); }
+      .footer-title { margin: 0; font-family: Inter, sans-serif; font-size: clamp(58px, 7vw, 100px); font-weight: 500; letter-spacing: -.095em; line-height: .9; }
+      .footer-contact { display: grid; width: 76px; height: 76px; place-items: center; border: 1px solid rgba(34, 38, 37, .24); border-radius: 50%; color: inherit; font-size: 32px; transition: transform .3s ease, background .3s ease; }
+      .footer-contact:hover { background: #fff; transform: rotate(45deg); }
+      .footer-body { position: relative; z-index: 1; display: grid; min-height: 520px; grid-template-columns: 1fr 1.2fr 1fr; align-items: center; }
+      .footer-link-group { align-self: start; padding-top: 34px; }
+      .footer-link-group h3 { margin: 0 0 24px; color: #6d7776; font-size: 12px; font-weight: 400; }
+      .footer-link-group a { display: block; width: max-content; margin-bottom: 17px; color: inherit; font-family: Inter, sans-serif; font-size: 22px; letter-spacing: -.05em; }
+      .footer-link-group a:hover { color: var(--orange); }
+      .footer-character { position: relative; align-self: end; justify-self: center; width: min(330px, 27vw); height: min(410px, 34vw); border-radius: 49% 51% 47% 53% / 42% 39% 61% 58%; background: linear-gradient(135deg, #fff 0%, #94999a 34%, #f7f7f3 51%, #626869 72%, #dce6ef 100%); box-shadow: inset -22px -18px 32px rgba(30, 34, 37, .4), inset 21px 17px 32px rgba(255, 255, 255, .85), 18px 28px 30px rgba(65, 95, 115, .2); transform: rotate(-7deg); transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+      .footer-character::before { position: absolute; top: 4%; right: 20%; width: 28%; height: 48%; border-radius: 60% 40% 55% 45%; background: linear-gradient(135deg, rgba(255, 255, 255, .9), transparent); content: ""; transform: rotate(24deg); }
+      .footer-eye { position: absolute; top: 48%; width: 47px; height: 47px; overflow: hidden; border-radius: 50%; background: radial-gradient(circle at 35% 29%, #fff 0 7%, #212831 8% 37%, #080c10 65%); box-shadow: 0 5px 8px rgba(0, 0, 0, .25); transition: transform .18s ease; }
+      .footer-eye.left { left: 29%; }
+      .footer-eye.right { right: 26%; }
+      .footer-bottom { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding-top: 18px; border-top: 1px solid rgba(34, 38, 37, .2); color: #556160; font-size: 12px; }
+      .footer-legal { display: flex; gap: 28px; }
+      .footer-legal a:hover { color: var(--orange); }
+
+      @media (max-width: 680px) {
+        .promo-bar { min-height: 34px; font-size: 11px; }
+        .site-nav { padding: 8px 14px; }
+        .nav-inner { grid-template-columns: 1fr auto 1fr; row-gap: 0; min-height: 0; }
+        .brand { grid-column: 2; grid-row: 1; justify-self: center; font-size: 26px; }
+        .brand-logo { width: 42px; height: 42px; }
+        .menu-link { grid-column: 1; grid-row: 1; }
+        .nav-actions { grid-column: 3; grid-row: 1; justify-self: end; justify-content: flex-end; gap: 12px; }
+        .socials { gap: 13px; }
+        .edit-link { display: none; }
+        .socials { gap: 15px; }
+        .edit-link { font-size: 13px; }
+        .hero { grid-template-columns: 1fr; gap: 28px; width: min(100% - 40px, 500px); margin: 56px auto 78px; }
+        .hero h1 { font-size: clamp(58px, 18vw, 100px); }
+        .hero-copy { max-width: 290px; font-size: 17px; }
+        .menu-section { grid-template-columns: 1fr; gap: 32px; width: min(100% - 40px, 520px); }
+        .category-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 20px; }
+        .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 14px; }
+        .tag { top: 8px; left: 8px; font-size: 11px; }
+        .product-name { font-size: 15px; }
+        .product-description { font-size: 11px; }
+        .site-footer { min-height: 760px; padding: 28px 20px 16px; }
+        .footer-title { font-size: 58px; }
+        .footer-contact { width: 58px; height: 58px; font-size: 25px; }
+        .footer-body { min-height: 560px; grid-template-columns: 1fr 1fr; align-items: stretch; }
+        .footer-link-group { padding-top: 28px; }
+        .footer-link-group a { font-size: 17px; }
+        .footer-character { position: absolute; right: 50%; bottom: 45px; width: 205px; height: 260px; transform: translateX(50%) rotate(-7deg); }
+        .footer-eye { width: 32px; height: 32px; }
+        .footer-bottom { align-items: flex-start; flex-direction: column; }
+      }
+    </style>
+    <link rel="stylesheet" href="search.css" />
+    <script src="search.js" defer></script>
+  </head>
+  <body>
+    <div class="promo-bar">20% on meals this week — recharge daily</div>
+
+    <nav class="site-nav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a class="menu-link" href="#menu">Menu <span class="menu-count">6</span></a>
+        <a class="brand" href="index.html" aria-label="Habibi home"><img class="brand-logo" src="Habibi%20logo.svg" alt="Habibi Halal Restaurant" /></a>
+
+        <div class="nav-actions">
+          <div class="socials" aria-label="Utility links">
+            <a class="social-link" href="#search" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"/><path d="m15.5 15.5 4.5 4.5"/></svg>
+            </a>
+            <a class="social-link" href="#account" aria-label="Account">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.8-3.5 3-5.2 6.5-5.2s5.7 1.7 6.5 5.2"/></svg>
+            </a>
+            <a class="social-link" id="open-cart" href="#cart" aria-label="Cart">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h2l1.7 9.2a2 2 0 0 0 2 1.6h6.8a2 2 0 0 0 1.9-1.4L20 8H7"/><circle cx="10" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg><span class="cart-count" id="cart-count" hidden>0</span>
+            </a>
+          </div>
+          <a class="edit-link" href="index.html#contact">Contact us <span class="edit-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </nav>
+    <main>
+      <section class="hero" id="about" aria-labelledby="hero-title">
+        <h1 id="hero-title">welcome to<br />habibi haven</h1>
+        <p class="hero-copy">Halal dining, generous portions &amp; warm hospitality — served daily from 8 AM to 8 PM on <a href="https://maps.app.goo.gl/" target="_blank" rel="noreferrer">Koinange Street, Nairobi</a></p>
+      </section>
+
+      <section class="menu-section" id="menu" aria-label="Menu">
+        <nav class="category-list" aria-label="Menu categories">
+          <a href="#menu">All <sup>6</sup></a>
+          <a href="#juices">Mains <sup>4</sup></a>
+          <a href="#shots">Grills <sup>1</sup></a>
+          <a href="#bowls">Sandwiches <sup>1</sup></a>
+        </nav>
+
+        <div class="product-grid">
+          <a class="product-card product-card-link" id="juices" href="product.html?product=direktor">
+            <div class="product-image"><span class="tag">Habibi Haven</span><img src="Food/Direktor.jpg" alt="Direktor meal" /></div>
+            <p class="product-type">Mains</p><h2 class="product-name">Direktor</h2><p class="product-description">Freshly prepared house meal</p><p class="product-price">$11</p>
+          </a>
+          <a class="product-card product-card-link" id="shots" href="product.html?product=curry-rice">
+            <div class="product-image shot"><span class="tag">Chef's Special</span><img src="Food/Curry%20%26%20rice%20meal.jpg" alt="Curry and rice meal" /></div>
+            <p class="product-type">Mains</p><h2 class="product-name">Curry &amp; rice meal</h2><p class="product-description">A generous curry and rice meal</p><p class="product-price">$4.50</p>
+          </a>
+          <a class="product-card product-card-link" id="bowls" href="product.html?product=clubhouse">
+            <div class="product-image"><span class="tag">Fresh Pick</span><img src="Food/Clubhouse%20sandwich.jpg" alt="Clubhouse sandwich" /></div>
+            <p class="product-type">Sandwiches</p><h2 class="product-name">Clubhouse sandwich</h2><p class="product-description">Freshly prepared clubhouse sandwich</p><p class="product-price">$20.50</p>
+          </a>
+          <a class="product-card product-card-link" id="smoothies" href="product.html?product=chickenbiryani">
+            <div class="product-image shot"><span class="tag">House Favourite</span><img src="Food/chickenbiryani.jpg" alt="Chicken biryani" /></div>
+            <p class="product-type">Mains</p><h2 class="product-name">chickenbiryani</h2><p class="product-description">Fragrant chicken biryani</p><p class="product-price">$8.50</p>
+          </a>
+          <a class="product-card product-card-link" href="product.html?product=lamb-mandi">
+            <div class="product-image"><span class="tag">Slow Cooked</span><img src="Food/lamb%20mandi.jpg" alt="Lamb mandi" /></div>
+            <p class="product-type">Mains</p><h2 class="product-name">lamb mandi</h2><p class="product-description">Tender lamb with fragrant rice</p><p class="product-price">$11</p>
+          </a>
+          <a class="product-card product-card-link" href="product.html?product=lamb-chops">
+            <div class="product-image"><span class="tag">Grill Favourite</span><img src="Food/lamb%20chops.jpg" alt="Lamb chops" /></div>
+            <p class="product-type">Grills</p><h2 class="product-name">lamb chops</h2><p class="product-description">Grilled lamb chops</p><p class="product-price"><s>$4.50</s> &nbsp;$3.60</p>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contact">
+      <div class="footer-atmosphere"></div>
+      <div class="footer-spotlight"></div>
+      <div class="footer-top">
+        <h2 class="footer-title">Let’s talk.</h2>
+        <a class="footer-contact" href="index.html#contact" aria-label="Contact us">↗</a>
+      </div>
+      <div class="footer-body">
+        <nav class="footer-link-group" aria-label="Explore">
+          <h3>Explore</h3>
+          <a href="index.html">Home</a>
+          <a href="#menu">Menu</a>
+          <a href="index.html#menu-preview">About</a>
+          <a href="index.html#faq-title">FAQs</a>
+        </nav>
+        <div class="footer-character" aria-label="Habibi mascot">
+          <span class="footer-eye left"></span>
+          <span class="footer-eye right"></span>
+        </div>
+        <nav class="footer-link-group" aria-label="Follow">
+          <h3>Follow</h3>
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">TikTok</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Habibi Halal Restaurant.</span>
+        <div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a></div>
+      </div>
+    </footer>
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart" aria-hidden="true">
+      <div class="cart-drawer-header"><h2>Your order</h2><button class="cart-close" id="close-cart" type="button" aria-label="Close cart">×</button></div>
+      <div class="drawer-items" id="drawer-items"></div>
+      <div class="drawer-footer"><div class="drawer-total"><span>Subtotal</span><strong id="drawer-total">KES 0</strong></div><a class="drawer-checkout" href="checkout.html">Continue to checkout →</a></div>
+    </aside>
+    <script>
+      const menuProducts = {
+        direktor: { key: 'direktor', name: 'Direktor', price: 1100, image: 'Food/Direktor.jpg' },
+        'curry-rice': { key: 'curry-rice', name: 'Curry & rice meal', price: 450, image: 'Food/Curry%20%26%20rice%20meal.jpg' },
+        clubhouse: { key: 'clubhouse', name: 'Clubhouse sandwich', price: 2050, image: 'Food/Clubhouse%20sandwich.jpg' },
+        chickenbiryani: { key: 'chickenbiryani', name: 'chickenbiryani', price: 850, image: 'Food/chickenbiryani.jpg' },
+        'lamb-mandi': { key: 'lamb-mandi', name: 'lamb mandi', price: 1100, image: 'Food/lamb%20mandi.jpg' },
+        'lamb-chops': { key: 'lamb-chops', name: 'lamb chops', price: 360, image: 'Food/lamb%20chops.jpg' }
+      };
+      const cartIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h2l1.7 9.2a2 2 0 0 0 2 1.6h6.8a2 2 0 0 0 1.9-1.4L20 8H7"/><circle cx="10" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg>';
+      const cartDrawer = document.querySelector('#cart-drawer');
+      const cartOverlay = document.querySelector('#cart-overlay');
+      const drawerItems = document.querySelector('#drawer-items');
+      const drawerTotal = document.querySelector('#drawer-total');
+      const cartCount = document.querySelector('#cart-count');
+      const formatKes = (amount) => `KES ${Math.round(amount).toLocaleString()}`;
+      function updateCartCount() { const cart = JSON.parse(localStorage.getItem('habibiCart') || '[]'); const count = cart.reduce((total, item) => total + item.quantity, 0); cartCount.textContent = count; cartCount.hidden = count === 0; }
+      function renderCartDrawer() {
+        const cart = JSON.parse(localStorage.getItem('habibiCart') || '[]');
+        drawerItems.innerHTML = '';
+        if (!cart.length) { drawerItems.innerHTML = '<p class="drawer-empty">Your cart is empty. <a href="#menu">Browse the menu</a> to add a meal.</p>'; drawerTotal.textContent = 'KES 0'; return; }
+        cart.forEach((item, index) => {
+          const row = document.createElement('div'); row.className = 'drawer-item';
+          row.innerHTML = `<img src="${item.image}" alt="${item.name}"><div><h3>${item.name}</h3><p>${formatKes(item.price)} each</p><div class="drawer-quantity"><button type="button" data-drawer-action="decrease" data-index="${index}" aria-label="Decrease ${item.name}">−</button><span>${item.quantity}</span><button type="button" data-drawer-action="increase" data-index="${index}" aria-label="Increase ${item.name}">+</button></div></div><strong class="drawer-price">${formatKes(item.price * item.quantity)}</strong>`;
+          drawerItems.appendChild(row);
+        });
+        drawerTotal.textContent = formatKes(cart.reduce((total, item) => total + item.price * item.quantity, 0)); updateCartCount();
+      }
+      function openCart() { renderCartDrawer(); cartDrawer.classList.add('is-open'); cartOverlay.classList.add('is-open'); cartDrawer.setAttribute('aria-hidden', 'false'); }
+      function closeCart() { cartDrawer.classList.remove('is-open'); cartOverlay.classList.remove('is-open'); cartDrawer.setAttribute('aria-hidden', 'true'); }
+      document.querySelector('#open-cart').addEventListener('click', (event) => { event.preventDefault(); openCart(); });
+      document.querySelector('#close-cart').addEventListener('click', closeCart);
+      cartOverlay.addEventListener('click', closeCart);
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeCart(); });
+      drawerItems.addEventListener('click', (event) => { const button = event.target.closest('button[data-index]'); if (!button) return; const cart = JSON.parse(localStorage.getItem('habibiCart') || '[]'); const index = Number(button.dataset.index); if (button.dataset.drawerAction === 'increase') cart[index].quantity += 1; else cart[index].quantity -= 1; if (cart[index].quantity < 1) cart.splice(index, 1); localStorage.setItem('habibiCart', JSON.stringify(cart)); renderCartDrawer(); updateCartCount(); });
+      document.querySelectorAll('.product-card-link').forEach((card) => {
+        const key = new URL(card.href).searchParams.get('product');
+        const item = menuProducts[key];
+        if (!item) return;
+        const button = document.createElement('span');
+        button.className = 'card-cart'; button.setAttribute('role', 'button'); button.setAttribute('tabindex', '0'); button.setAttribute('aria-label', `Add ${item.name} to cart`); button.innerHTML = cartIcon;
+        const addToCart = (event) => { event.preventDefault(); event.stopPropagation(); const cart = JSON.parse(localStorage.getItem('habibiCart') || '[]'); const existing = cart.find((cartItem) => cartItem.key === item.key); if (existing) existing.quantity += 1; else cart.push({ ...item, quantity: 1 }); localStorage.setItem('habibiCart', JSON.stringify(cart)); updateCartCount(); button.classList.add('is-added'); button.setAttribute('aria-label', `${item.name} added to cart`); button.innerHTML = '✓'; setTimeout(() => { button.classList.remove('is-added'); button.innerHTML = cartIcon; }, 1200); };
+        button.addEventListener('click', addToCart); button.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') addToCart(event); });
+        card.querySelector('.product-image').appendChild(button);
+      });
+      updateCartCount();
+    </script>
+  </body>
+</html>
