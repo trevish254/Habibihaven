@@ -89,12 +89,12 @@
     </main>
     <script>
       const products = [
-        { key: 'direktor', name: 'Direktor', category: 'Mains', price: 1100, image: 'Food/Direktor.jpg', description: 'A generous house favourite made for a satisfying meal.' },
-        { key: 'curry-rice', name: 'Curry & rice meal', category: 'Mains', price: 450, image: 'Food/Curry%20%26%20rice%20meal.jpg', description: 'Comforting curry served with fragrant rice and plenty of flavour.' },
-        { key: 'clubhouse', name: 'Clubhouse sandwich', category: 'Sandwiches', price: 2050, image: 'Food/Clubhouse%20sandwich.jpg', description: 'A stacked clubhouse sandwich for an easy, generous lunch.' },
-        { key: 'chickenbiryani', name: 'chickenbiryani', category: 'Mains', price: 850, image: 'Food/chickenbiryani.jpg', description: 'Fragrant chicken biryani prepared for sharing.' },
-        { key: 'lamb-mandi', name: 'lamb mandi', category: 'Mains', price: 1100, image: 'Food/lamb%20mandi.jpg', description: 'Tender lamb with fragrant rice and rich, comforting flavour.' },
-        { key: 'lamb-chops', name: 'lamb chops', category: 'Grills', price: 360, image: 'Food/lamb%20chops.jpg', description: 'Grilled lamb chops with a smoky finish.' }
+        { key: 'direktor', name: 'Direktor', category: 'Mains', price: 1425, image: 'Food/Direktor.jpg', description: 'A generous house favourite made for a satisfying meal.' },
+        { key: 'curry-rice', name: 'Curry & rice meal', category: 'Mains', price: 585, image: 'Food/Curry%20%26%20rice%20meal.jpg', description: 'Comforting curry served with fragrant rice and plenty of flavour.' },
+        { key: 'clubhouse', name: 'Clubhouse sandwich', category: 'Sandwiches', price: 2655, image: 'Food/Clubhouse%20sandwich.jpg', description: 'A stacked clubhouse sandwich for an easy, generous lunch.' },
+        { key: 'chickenbiryani', name: 'chickenbiryani', category: 'Mains', price: 1105, image: 'Food/chickenbiryani.jpg', description: 'Fragrant chicken biryani prepared for sharing.' },
+        { key: 'lamb-mandi', name: 'lamb mandi', category: 'Mains', price: 1425, image: 'Food/lamb%20mandi.jpg', description: 'Tender lamb with fragrant rice and rich, comforting flavour.' },
+        { key: 'lamb-chops', name: 'lamb chops', category: 'Grills', price: 465, image: 'Food/lamb%20chops.jpg', description: 'Grilled lamb chops with a smoky finish.' }
       ];
       const selectedKey = new URLSearchParams(window.location.search).get('product') || products[0].key;
       const selectedIndex = Math.max(0, products.findIndex((product) => product.key === selectedKey));
